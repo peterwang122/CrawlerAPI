@@ -14,11 +14,12 @@ class BaseDb:
         self.brand = brand
         self.market = market
         self.db = db
+        self.redis_client = redis.Redis(**REDIS_CONFIG)  # 使用 config 中的 Redis 配置
         if log:
             self.db_info = self.load_log_db_info()
         else:
             self.db_info = self.load_db_info()
-        self.redis_client = redis.Redis(**REDIS_CONFIG)  # 使用 config 中的 Redis 配置
+
         self.conn = None
 
     def load_db_info(self) -> Dict[str, Any]:
