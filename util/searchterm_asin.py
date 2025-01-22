@@ -257,7 +257,7 @@ async def searchterm_asin(db,brand,market,day,order,num):
                     if i:
                         title = i
 
-                        asin_data = await pachong(db, brand, market, title,asin_cache)
+                        asin_data = await pachong(db, brand, market, title)
                         for asin in asin_data:
                             if asin not in seen_asins:
                                 all_asin_data.append(asin)  # 添加到最终的列表
@@ -270,7 +270,7 @@ async def searchterm_asin(db,brand,market,day,order,num):
                 for sercahterm in sercahterms:
                     if sercahterm:
 
-                        asin_data1 = await pachong(db, brand, market, sercahterm, asin_cache)
+                        asin_data1 = await pachong(db, brand, market, sercahterm)
                         for asin in asin_data1:
                             if asin not in seen_asins:
                                 all_asin_data.append(asin)  # 添加到最终的列表
@@ -284,7 +284,7 @@ async def searchterm_asin(db,brand,market,day,order,num):
             if len(all_asin_data) == 0:
                 sercahterm = await fetch_last_category(market,parent_asin)
                 if sercahterm:
-                    asin_data1 = await pachong(db, brand, market, sercahterm, asin_cache)
+                    asin_data1 = await pachong(db, brand, market, sercahterm)
                     for asin in asin_data1:
                         if asin not in seen_asins:
                             all_asin_data.append(asin)  # 添加到最终的列表
