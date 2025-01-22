@@ -1,0 +1,2492 @@
+amazon_100_CiertoJP:
+  Cierto:
+    default:
+      UID: 100
+      api_type: OLD
+      dbname: amazon_100_CiertoJP
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  "\u30CE\u30FC\u30D6\u30E9\u30F3\u30C9\u54C1":
+    default:
+      UID: 100
+      api_type: OLD
+      dbname: amazon_100_CiertoJP
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_101_jieli_US:
+  GEEKOM:
+    default:
+      UID: 101
+      api_type: OLD
+      dbname: amazon_101_jieli_US
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_102_ToyAc:
+  Lajeje:
+    default:
+      UID: 102
+      api_type: OLD
+      dbname: amazon_102_ToyAc
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_103_Sivio:
+  Sivio:
+    default:
+      UID: 103
+      api_type: OLD
+      dbname: amazon_103_Sivio
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_104_MrSandman:
+  Mr. Sandman:
+    default:
+      UID: 104
+      api_type: OLD
+      dbname: amazon_104_MrSandman
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_105_6tao:
+  suihuooo:
+    default:
+      UID: 105
+      api_type: OLD
+      dbname: amazon_105_6tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_106_2tao:
+  Uuoeebb:
+    default:
+      UID: 106
+      api_type: OLD
+      dbname: amazon_106_2tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_107_8tao:
+  pioncrey:
+    default:
+      UID: 107
+      api_type: OLD
+      dbname: amazon_107_8tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_108_9tao:
+  suihuooo:
+    default:
+      UID: 108
+      api_type: OLD
+      dbname: amazon_108_9tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_110_chenbaixue:
+  Generic:
+    default:
+      UID: 110
+      api_type: OLD
+      dbname: amazon_110_chenbaixue
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  HWQSAD:
+    default:
+      UID: 110
+      api_type: OLD
+      dbname: amazon_110_chenbaixue
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  generic:
+    default:
+      UID: 110
+      api_type: OLD
+      dbname: amazon_110_chenbaixue
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  hwqsad:
+    default:
+      UID: 110
+      api_type: OLD
+      dbname: amazon_110_chenbaixue
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_112_dianpuqi:
+  GDSIW:
+    default:
+      UID: 112
+      api_type: OLD
+      dbname: amazon_112_dianpuqi
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_114_6taoouzhou:
+  suihuooo:
+    default:
+      UID: 114
+      api_type: OLD
+      dbname: amazon_114_6taoouzhou
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_116_4tao:
+  MIHIYIRY:
+    default:
+      UID: 116
+      api_type: OLD
+      dbname: amazon_116_4tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Uuoeebb:
+    default:
+      UID: 116
+      api_type: OLD
+      dbname: amazon_116_4tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_117_VickyVanHome_FR:
+  Veathzet:
+    default:
+      UID: 117
+      api_type: OLD
+      dbname: amazon_117_VickyVanHome_FR
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  VickyVan:
+    default:
+      UID: 117
+      api_type: OLD
+      dbname: amazon_117_VickyVanHome_FR
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_118_dianpu5:
+  HGwez:
+    default:
+      UID: 118
+      api_type: OLD
+      dbname: amazon_118_dianpu5
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_119_7tao:
+  suihuooo:
+    default:
+      UID: 119
+      api_type: OLD
+      dbname: amazon_119_7tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_120_fengsheng:
+  Generic:
+    default:
+      UID: 120
+      api_type: OLD
+      dbname: amazon_120_fengsheng
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  INENEMIS:
+    default:
+      UID: 120
+      api_type: OLD
+      dbname: amazon_120_fengsheng
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_121_1tao:
+  BAOD:
+    default:
+      UID: 121
+      api_type: OLD
+      dbname: amazon_121_1tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  MIHIYIRY:
+    default:
+      UID: 121
+      api_type: OLD
+      dbname: amazon_121_1tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Uuoeebb:
+    default:
+      UID: 121
+      api_type: OLD
+      dbname: amazon_121_1tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  VANILLA:
+    default:
+      UID: 121
+      api_type: OLD
+      dbname: amazon_121_1tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_122_3tao:
+  MIHIYIRY:
+    default:
+      UID: 122
+      api_type: OLD
+      dbname: amazon_122_3tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Uuoeebb:
+    default:
+      UID: 122
+      api_type: OLD
+      dbname: amazon_122_3tao
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_123_AOF_US:
+  Artechworks:
+    default:
+      UID: 123
+      api_type: OLD
+      dbname: amazon_123_AOF_US
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_125_AmesSoeurs:
+  Ames Soeurs:
+    default:
+      UID: 125
+      api_type: OLD
+      dbname: amazon_125_AmesSoeurs
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_126_Chargingo:
+  Chargingo:
+    default:
+      UID: 126
+      api_type: OLD
+      dbname: amazon_126_Chargingo
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_127_ViTer:
+  TivsiVer:
+    default:
+      UID: 127
+      api_type: OLD
+      dbname: amazon_127_ViTer
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_129_HJS_JP:
+  Altrobene:
+    default:
+      UID: 129
+      api_type: OLD
+      dbname: amazon_129_HJS_JP
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_131_NDL_UK:
+  GEPAS:
+    default:
+      UID: 131
+      api_type: OLD
+      dbname: amazon_131_NDL_UK
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Lishetimig:
+    default:
+      UID: 131
+      api_type: OLD
+      dbname: amazon_131_NDL_UK
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_133_heju:
+  Veement:
+    default:
+      UID: 133
+      api_type: OLD
+      dbname: amazon_133_heju
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  syndesmos:
+    default:
+      UID: 133
+      api_type: OLD
+      dbname: amazon_133_heju
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_134_SP_US:
+  Hmount:
+    default:
+      UID: 134
+      api_type: OLD
+      dbname: amazon_134_SP_US
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  SPORTLINK:
+    default:
+      UID: 134
+      api_type: OLD
+      dbname: amazon_134_SP_US
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Sportlink:
+    default:
+      UID: 134
+      api_type: OLD
+      dbname: amazon_134_SP_US
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_135_SP_DE:
+  SPORTLINK:
+    default:
+      UID: 135
+      api_type: OLD
+      dbname: amazon_135_SP_DE
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_136_Jingrui:
+  Keylitos:
+    default:
+      UID: 136
+      api_type: OLD
+      dbname: amazon_136_Jingrui
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_137_ZenStorageGlobal:
+  ZenStorage:
+    default:
+      UID: 137
+      api_type: OLD
+      dbname: amazon_137_ZenStorageGlobal
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_139_ORANTALE:
+  ORANTALE:
+    default:
+      UID: 139
+      api_type: OLD
+      dbname: amazon_139_ORANTALE
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_140_jiguoping:
+  GIFTASTIC:
+    default:
+      UID: 140
+      api_type: OLD
+      dbname: amazon_140_jiguoping
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_141_zzzz:
+  Biobviao:
+    default:
+      UID: 141
+      api_type: OLD
+      dbname: amazon_141_zzzz
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  HFGFSQ:
+    default:
+      UID: 141
+      api_type: OLD
+      dbname: amazon_141_zzzz
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_142_OFAMOUS_JP: {}
+amazon_143_liuhualan:
+  Artificial Foam Rose:
+    default:
+      UID: 143
+      api_type: OLD
+      dbname: amazon_143_liuhualan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Silk flowers in bulk wholesale:
+    default:
+      UID: 143
+      api_type: OLD
+      dbname: amazon_143_liuhualan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  rose bearAA:
+    default:
+      UID: 143
+      api_type: OLD
+      dbname: amazon_143_liuhualan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  roses flowers in bulk wholesale:
+    default:
+      UID: 143
+      api_type: OLD
+      dbname: amazon_143_liuhualan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  silk flowers in bulk wholesale:
+    default:
+      UID: 143
+      api_type: OLD
+      dbname: amazon_143_liuhualan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_145_fba_2:
+  pldnhzua:
+    default:
+      UID: 145
+      api_type: OLD
+      dbname: amazon_145_fba_2
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_44_lifeplus:
+  DAYIH:
+    default:
+      UID: 44
+      api_type: OLD
+      dbname: amazon_44_lifeplus
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  LaCyan:
+    default:
+      UID: 44
+      api_type: OLD
+      dbname: amazon_44_lifeplus
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_45_lifeplus:
+  Generic:
+    default:
+      UID: 45
+      api_type: OLD
+      dbname: amazon_45_lifeplus
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  KKN:
+    default:
+      UID: 45
+      api_type: OLD
+      dbname: amazon_45_lifeplus
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  LaCyan:
+    default:
+      UID: 45
+      api_type: OLD
+      dbname: amazon_45_lifeplus
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Orchidleaf:
+    default:
+      UID: 45
+      api_type: OLD
+      dbname: amazon_45_lifeplus
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_46_network:
+  Generic:
+    default:
+      UID: 46
+      api_type: OLD
+      dbname: amazon_46_network
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Sorftyms:
+    default:
+      UID: 46
+      api_type: OLD
+      dbname: amazon_46_network
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_47_FutureStar:
+  Eletronova:
+    default:
+      UID: 47
+      api_type: OLD
+      dbname: amazon_47_FutureStar
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  ofwaterstroll:
+    default:
+      UID: 47
+      api_type: OLD
+      dbname: amazon_47_FutureStar
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_50_tanbo:
+  TECBOT:
+    default:
+      UID: 50
+      api_type: OLD
+      dbname: amazon_50_tanbo
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_52_ColorNymph:
+  5-Star:
+    default:
+      UID: 52
+      api_type: OLD
+      dbname: amazon_52_ColorNymph
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Color Nymph:
+    default:
+      UID: 52
+      api_type: OLD
+      dbname: amazon_52_ColorNymph
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Generic:
+    default:
+      UID: 52
+      api_type: OLD
+      dbname: amazon_52_ColorNymph
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_60_114_WL:
+  Ethomes:
+    default:
+      UID: 60
+      api_type: OLD
+      dbname: amazon_60_114_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Ethomes table runner:
+    default:
+      UID: 60
+      api_type: OLD
+      dbname: amazon_60_114_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  TaiXiuHome:
+    default:
+      UID: 60
+      api_type: OLD
+      dbname: amazon_60_114_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  mylacerhome:
+    default:
+      UID: 60
+      api_type: OLD
+      dbname: amazon_60_114_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_61_B3dianpu:
+  M SHUYUN:
+    default:
+      UID: 61
+      api_type: OLD
+      dbname: amazon_61_B3dianpu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_62_241_WL:
+  ARZER:
+    default:
+      UID: 62
+      api_type: OLD
+      dbname: amazon_62_241_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Justchee:
+    default:
+      UID: 62
+      api_type: OLD
+      dbname: amazon_62_241_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  MOONMN:
+    default:
+      UID: 62
+      api_type: OLD
+      dbname: amazon_62_241_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  QsyyHome:
+    default:
+      UID: 62
+      api_type: OLD
+      dbname: amazon_62_241_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Trczzone:
+    default:
+      UID: 62
+      api_type: OLD
+      dbname: amazon_62_241_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Vineen:
+    default:
+      UID: 62
+      api_type: OLD
+      dbname: amazon_62_241_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  WXYSHOME:
+    default:
+      UID: 62
+      api_type: OLD
+      dbname: amazon_62_241_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  WXYSHOME MAKEGELD:
+    default:
+      UID: 62
+      api_type: OLD
+      dbname: amazon_62_241_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_63_HJS_US:
+  Altrobene:
+    default:
+      UID: 63
+      api_type: OLD
+      dbname: amazon_63_HJS_US
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_64_ZAPJQL:
+  ZAPJQL:
+    default:
+      UID: 64
+      api_type: OLD
+      dbname: amazon_64_ZAPJQL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_65_SEDY_US:
+  HORUSDY:
+    default:
+      UID: 65
+      api_type: OLD
+      dbname: amazon_65_SEDY_US
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  SEDY:
+    default:
+      UID: 65
+      api_type: OLD
+      dbname: amazon_65_SEDY_US
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_66_236_WL:
+  GLDs HOMES:
+    default:
+      UID: 66
+      api_type: OLD
+      dbname: amazon_66_236_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  eeivs:
+    default:
+      UID: 66
+      api_type: OLD
+      dbname: amazon_66_236_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_67_PioneerCampOutdoor:
+  Pioneer Camp:
+    default:
+      UID: 67
+      api_type: OLD
+      dbname: amazon_67_PioneerCampOutdoor
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_68_LILLEPRINS:
+  LILLEPRINS:
+    default:
+      UID: 68
+      api_type: OLD
+      dbname: amazon_68_LILLEPRINS
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_69_difenkelai:
+  Xyvaly:
+    default:
+      UID: 69
+      api_type: OLD
+      dbname: amazon_69_difenkelai
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_70_Tzirci:
+  Tzirci:
+    default:
+      UID: 70
+      api_type: OLD
+      dbname: amazon_70_Tzirci
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_71_DGXLXL:
+  LYMAYDA:
+    default:
+      UID: 71
+      api_type: OLD
+      dbname: amazon_71_DGXLXL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_73_WiWi_beimeizhan:
+  WiWi:
+    default:
+      UID: 73
+      api_type: OLD
+      dbname: amazon_73_WiWi_beimeizhan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  wiwi:
+    default:
+      UID: 73
+      api_type: OLD
+      dbname: amazon_73_WiWi_beimeizhan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_74_TOPDC:
+  Chargingo:
+    default:
+      UID: 74
+      api_type: OLD
+      dbname: amazon_74_TOPDC
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Greatway:
+    default:
+      UID: 74
+      api_type: OLD
+      dbname: amazon_74_TOPDC
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  TOPAC:
+    default:
+      UID: 74
+      api_type: OLD
+      dbname: amazon_74_TOPDC
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  TOPDC:
+    default:
+      UID: 74
+      api_type: OLD
+      dbname: amazon_74_TOPDC
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_75_BambooBud_beimeizhan:
+  BambooBud:
+    default:
+      UID: 75
+      api_type: OLD
+      dbname: amazon_75_BambooBud_beimeizhan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_76_B1dianpu:
+  Elufa:
+    default:
+      UID: 76
+      api_type: OLD
+      dbname: amazon_76_B1dianpu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  HoneyJar:
+    default:
+      UID: 76
+      api_type: OLD
+      dbname: amazon_76_B1dianpu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  LEI EAGLE:
+    default:
+      UID: 76
+      api_type: OLD
+      dbname: amazon_76_B1dianpu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  MUMIGUAN:
+    default:
+      UID: 76
+      api_type: OLD
+      dbname: amazon_76_B1dianpu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_77_XINLIStorebeimei:
+  OUTON:
+    default:
+      UID: 77
+      api_type: OLD
+      dbname: amazon_77_XINLIStorebeimei
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_78_Local_WL:
+  Grehge:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  JH table runner:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  JH tablecloths:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  KOURILAND:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  KZH:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Katouigb:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Kitette:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  NANQUAN:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Skinmed:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  UpdateClassic:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Wolkemer:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  YIDWED:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  dolond:
+    default:
+      UID: 78
+      api_type: OLD
+      dbname: amazon_78_Local_WL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_79_3D_LIFE:
+  B&L:
+    default:
+      UID: 79
+      api_type: OLD
+      dbname: amazon_79_3D_LIFE
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_80_DU:
+  COMOYA:
+    default:
+      UID: 80
+      api_type: OLD
+      dbname: amazon_80_DU
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  GULTMEE:
+    default:
+      UID: 80
+      api_type: OLD
+      dbname: amazon_80_DU
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  bubbacare:
+    default:
+      UID: 80
+      api_type: OLD
+      dbname: amazon_80_DU
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_81_dingtai:
+  TECBOT:
+    default:
+      UID: 81
+      api_type: OLD
+      dbname: amazon_81_dingtai
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_82_pangdundun:
+  DEASON:
+    default:
+      UID: 82
+      api_type: OLD
+      dbname: amazon_82_pangdundun
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_83_PioneerCampStore:
+  Pioneer Camp:
+    default:
+      UID: 83
+      api_type: OLD
+      dbname: amazon_83_PioneerCampStore
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_84_Topblan:
+  Generic:
+    default:
+      UID: 84
+      api_type: OLD
+      dbname: amazon_84_Topblan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Topblan:
+    default:
+      UID: 84
+      api_type: OLD
+      dbname: amazon_84_Topblan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  ZZZhen:
+    default:
+      UID: 84
+      api_type: OLD
+      dbname: amazon_84_Topblan
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_85_Geelink:
+  Geelink:
+    default:
+      UID: 85
+      api_type: OLD
+      dbname: amazon_85_Geelink
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  SPORTLINK:
+    default:
+      UID: 85
+      api_type: OLD
+      dbname: amazon_85_Geelink
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  URMIIM:
+    default:
+      UID: 85
+      api_type: OLD
+      dbname: amazon_85_Geelink
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Ubrand:
+    default:
+      UID: 85
+      api_type: OLD
+      dbname: amazon_85_Geelink
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_86_superpenguin:
+  Cozy Bliss:
+    default:
+      UID: 86
+      api_type: OLD
+      dbname: amazon_86_superpenguin
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Generic:
+    default:
+      UID: 86
+      api_type: OLD
+      dbname: amazon_86_superpenguin
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Pawque:
+    default:
+      UID: 86
+      api_type: OLD
+      dbname: amazon_86_superpenguin
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Super Penguin:
+    default:
+      UID: 86
+      api_type: OLD
+      dbname: amazon_86_superpenguin
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_87_MOSSROSE:
+  Moss Rose:
+    default:
+      UID: 87
+      api_type: OLD
+      dbname: amazon_87_MOSSROSE
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_88_BN:
+  Beautiful Nomad:
+    default:
+      UID: 88
+      api_type: OLD
+      dbname: amazon_88_BN
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_89_BL:
+  Breezy Lane:
+    default:
+      UID: 89
+      api_type: OLD
+      dbname: amazon_89_BL
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_90_SS:
+  Spicy Sandia:
+    default:
+      UID: 90
+      api_type: OLD
+      dbname: amazon_90_SS
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_91_INKOFF:
+  Cizayoi:
+    default:
+      UID: 91
+      api_type: OLD
+      dbname: amazon_91_INKOFF
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  INKOFF:
+    default:
+      UID: 91
+      api_type: OLD
+      dbname: amazon_91_INKOFF
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_92_Furry_FluffyPetFurnitureStore:
+  Furry-Fluffy:
+    default:
+      UID: 92
+      api_type: OLD
+      dbname: amazon_92_Furry_FluffyPetFurnitureStore
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_93_Myfeasy:
+  Myfeasy:
+    default:
+      UID: 93
+      api_type: OLD
+      dbname: amazon_93_Myfeasy
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_94_Joyprotyn:
+  Joyprotyn:
+    default:
+      UID: 94
+      api_type: OLD
+      dbname: amazon_94_Joyprotyn
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_95_Braventure:
+  Braventure:
+    default:
+      UID: 95
+      api_type: OLD
+      dbname: amazon_95_Braventure
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_96_Cierto:
+  Cierto:
+    default:
+      UID: 96
+      api_type: OLD
+      dbname: amazon_96_Cierto
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Generic:
+    default:
+      UID: 96
+      api_type: OLD
+      dbname: amazon_96_Cierto
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Mansarovar:
+    default:
+      UID: 96
+      api_type: OLD
+      dbname: amazon_96_Cierto
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  OZERO:
+    default:
+      UID: 96
+      api_type: OLD
+      dbname: amazon_96_Cierto
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_97_Bessteven:
+  BESSTEVEN:
+    default:
+      UID: 97
+      api_type: OLD
+      dbname: amazon_97_Bessteven
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  OZERO:
+    default:
+      UID: 97
+      api_type: OLD
+      dbname: amazon_97_Bessteven
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_98_AccessHN:
+  SERISSA:
+    default:
+      UID: 98
+      api_type: OLD
+      dbname: amazon_98_AccessHN
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Tangsoo:
+    default:
+      UID: 98
+      api_type: OLD
+      dbname: amazon_98_AccessHN
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_99_pisi:
+  Oli Anderson:
+    default:
+      UID: 99
+      api_type: OLD
+      dbname: amazon_99_pisi
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_ads:
+  LAPASA:
+    default:
+      UID: 1
+      api_type: OLD
+      dbname: amazon_ads
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Lapasa:
+    default:
+      UID: 1
+      api_type: OLD
+      dbname: amazon_ads
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Safelake:
+    default:
+      UID: 1
+      api_type: OLD
+      dbname: amazon_ads
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_bdzx:
+  BTkviseQat:
+    default:
+      UID: 4
+      api_type: OLD
+      dbname: amazon_bdzx
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 0
+      user: root
+  DELOMO:
+    default:
+      UID: 4
+      api_type: OLD
+      dbname: amazon_bdzx
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 0
+      user: root
+  Yecaye:
+    default:
+      UID: 4
+      api_type: OLD
+      dbname: amazon_bdzx
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 0
+      user: root
+amazon_bdzx_delomo:
+  DELOMO:
+    default:
+      UID: 29
+      api_type: OLD
+      dbname: amazon_bdzx_delomo
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_bdzx_mudeela:
+  MUDEELA:
+    default:
+      UID: 7
+      api_type: OLD
+      dbname: amazon_bdzx_mudeela
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  SPOREYE:
+    default:
+      UID: 7
+      api_type: OLD
+      dbname: amazon_bdzx_mudeela
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Warmbond:
+    default:
+      UID: 7
+      api_type: OLD
+      dbname: amazon_bdzx_mudeela
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_bdzx_rossny:
+  Hengulus:
+    default:
+      UID: 15
+      api_type: OLD
+      dbname: amazon_bdzx_rossny
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  MUDEELA:
+    default:
+      UID: 15
+      api_type: OLD
+      dbname: amazon_bdzx_rossny
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  ROSSNY:
+    default:
+      UID: 15
+      api_type: OLD
+      dbname: amazon_bdzx_rossny
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_bdzx_zen_cave:
+  ZEN CAVE:
+    default:
+      UID: 14
+      api_type: OLD
+      dbname: amazon_bdzx_zen_cave
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_huangjunxi:
+  Bonviee:
+    default:
+      UID: 17
+      api_type: OLD
+      dbname: amazon_huangjunxi
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  DOOOB:
+    default:
+      UID: 17
+      api_type: OLD
+      dbname: amazon_huangjunxi
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  keimi:
+    default:
+      UID: 17
+      api_type: OLD
+      dbname: amazon_huangjunxi
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_huixin:
+  YOURUN:
+    default:
+      UID: 42
+      api_type: OLD
+      dbname: amazon_huixin
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_kfeiya:
+  COFaR:
+    default:
+      UID: 38
+      api_type: OLD
+      dbname: amazon_kfeiya
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_mayigongxiang:
+  ANTSHARE:
+    default:
+      UID: 37
+      api_type: OLD
+      dbname: amazon_mayigongxiang
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Bestcellcase:
+    default:
+      UID: 37
+      api_type: OLD
+      dbname: amazon_mayigongxiang
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  GOLDJU:
+    default:
+      UID: 37
+      api_type: OLD
+      dbname: amazon_mayigongxiang
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Hoguomy:
+    default:
+      UID: 37
+      api_type: OLD
+      dbname: amazon_mayigongxiang
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Huakay:
+    default:
+      UID: 37
+      api_type: OLD
+      dbname: amazon_mayigongxiang
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  WOOQU:
+    default:
+      UID: 37
+      api_type: OLD
+      dbname: amazon_mayigongxiang
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_mayigongxiang_huakey:
+  AMILIFECASES:
+    default:
+      UID: 39
+      api_type: OLD
+      dbname: amazon_mayigongxiang_huakey
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  ANTSHARE:
+    default:
+      UID: 39
+      api_type: OLD
+      dbname: amazon_mayigongxiang_huakey
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Bestcellcase:
+    default:
+      UID: 39
+      api_type: OLD
+      dbname: amazon_mayigongxiang_huakey
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  GOLDJU:
+    default:
+      UID: 39
+      api_type: OLD
+      dbname: amazon_mayigongxiang_huakey
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Huakay:
+    default:
+      UID: 39
+      api_type: OLD
+      dbname: amazon_mayigongxiang_huakey
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Joytra:
+    default:
+      UID: 39
+      api_type: OLD
+      dbname: amazon_mayigongxiang_huakey
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  PAKUYA:
+    default:
+      UID: 39
+      api_type: OLD
+      dbname: amazon_mayigongxiang_huakey
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  URROY:
+    default:
+      UID: 39
+      api_type: OLD
+      dbname: amazon_mayigongxiang_huakey
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  WOOQU:
+    default:
+      UID: 39
+      api_type: OLD
+      dbname: amazon_mayigongxiang_huakey
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_ouruite:
+  RIDALUX:
+    default:
+      UID: 41
+      api_type: OLD
+      dbname: amazon_ouruite
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_outdoormaster:
+  EasyTravel:
+    default:
+      UID: 3
+      api_type: OLD
+      dbname: amazon_outdoormaster
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 0
+      user: root
+  OutdoorMaster:
+    default:
+      UID: 3
+      api_type: OLD
+      dbname: amazon_outdoormaster
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 0
+      user: root
+amazon_outdoormaster_jp:
+  EasyTravel:
+    default:
+      UID: 3
+      api_type: OLD
+      dbname: amazon_outdoormaster_jp
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  NAGI ZAKKA:
+    default:
+      UID: 3
+      api_type: OLD
+      dbname: amazon_outdoormaster_jp
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  OUTDOORMASTER:
+    default:
+      UID: 3
+      api_type: OLD
+      dbname: amazon_outdoormaster_jp
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  OutdoorMaster:
+    default:
+      UID: 3
+      api_type: OLD
+      dbname: amazon_outdoormaster_jp
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_outdoormaster_vendors_vc1:
+  ALBINA:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  BizHomart:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Bizroma:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  CHADIOR:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  GOOD & GRACIOUS:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  KHUNO:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  MATBEBY:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  OutdoorMaster:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  PRYMAX:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Qipi:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  TOBA:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Upscale Decor:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  wavveUziz:
+    default:
+      UID: 34
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc1
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_outdoormaster_vendors_vc2:
+  ALBINA:
+    default:
+      UID: 35
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc2
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  OutdoorMaster:
+    default:
+      UID: 35
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc2
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  SNOWER:
+    default:
+      UID: 35
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc2
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  snower:
+    default:
+      UID: 35
+      api_type: OLD
+      dbname: amazon_outdoormaster_vendors_vc2
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_suihuo_suihuooo:
+  suihuooo:
+    default:
+      UID: 26
+      api_type: OLD
+      dbname: amazon_suihuo_suihuooo
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_suihuo_uuoeebb_global:
+  Uuoeebb:
+    default:
+      UID: 25
+      api_type: OLD
+      dbname: amazon_suihuo_uuoeebb_global
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_youniverse_eu:
+  BANTI:
+    default:
+      UID: 33
+      api_type: OLD
+      dbname: amazon_youniverse_eu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  CUBICUBI:
+    default:
+      UID: 33
+      api_type: OLD
+      dbname: amazon_youniverse_eu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  CubiCubi:
+    default:
+      UID: 33
+      api_type: OLD
+      dbname: amazon_youniverse_eu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Cubiker:
+    default:
+      UID: 33
+      api_type: OLD
+      dbname: amazon_youniverse_eu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  DESINO:
+    default:
+      UID: 33
+      api_type: OLD
+      dbname: amazon_youniverse_eu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  EleTab:
+    default:
+      UID: 33
+      api_type: OLD
+      dbname: amazon_youniverse_eu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  FEZIBO:
+    default:
+      UID: 33
+      api_type: OLD
+      dbname: amazon_youniverse_eu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Generic:
+    default:
+      UID: 33
+      api_type: OLD
+      dbname: amazon_youniverse_eu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  vernal:
+    default:
+      UID: 33
+      api_type: OLD
+      dbname: amazon_youniverse_eu
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_youniverse_fezibo_us:
+  CubiCubi:
+    default:
+      UID: 31
+      api_type: OLD
+      dbname: amazon_youniverse_fezibo_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Cubiker:
+    default:
+      UID: 31
+      api_type: OLD
+      dbname: amazon_youniverse_fezibo_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  DESINO:
+    default:
+      UID: 31
+      api_type: OLD
+      dbname: amazon_youniverse_fezibo_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  EleTab:
+    default:
+      UID: 31
+      api_type: OLD
+      dbname: amazon_youniverse_fezibo_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  FAMISKY:
+    default:
+      UID: 31
+      api_type: OLD
+      dbname: amazon_youniverse_fezibo_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  FEZIBO:
+    default:
+      UID: 31
+      api_type: OLD
+      dbname: amazon_youniverse_fezibo_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Tespo:
+    default:
+      UID: 31
+      api_type: OLD
+      dbname: amazon_youniverse_fezibo_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  pelpo:
+    default:
+      UID: 31
+      api_type: OLD
+      dbname: amazon_youniverse_fezibo_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+amazon_youniverse_inc_us:
+  CubiCubi:
+    default:
+      UID: 30
+      api_type: OLD
+      dbname: amazon_youniverse_inc_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Cubiker:
+    default:
+      UID: 30
+      api_type: OLD
+      dbname: amazon_youniverse_inc_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  DESINO:
+    default:
+      UID: 30
+      api_type: OLD
+      dbname: amazon_youniverse_inc_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  EleTab:
+    default:
+      UID: 30
+      api_type: OLD
+      dbname: amazon_youniverse_inc_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  FAMISKY:
+    default:
+      UID: 30
+      api_type: OLD
+      dbname: amazon_youniverse_inc_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  FEZIBO:
+    default:
+      UID: 30
+      api_type: OLD
+      dbname: amazon_youniverse_inc_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
+  Tespo:
+    default:
+      UID: 30
+      api_type: OLD
+      dbname: amazon_youniverse_inc_us
+      host: 192.168.5.114
+      password: duozhuan888
+      port: 3308
+      public: 1
+      user: root
