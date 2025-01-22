@@ -13,119 +13,12 @@ import json
 import csv
 import time
 from time import sleep
+import redis
+from config import REDIS_CONFIG
 from db.tools_db_new_sp import DbNewSpTools
 from db.tools_db_sp import DbSpTools
 
-# def load_db_info(db,brand,market):
-#     # 从 JSON 文件加载数据库信息
-#     db_info_path = os.path.join(get_config_path(), 'db_info.json')
-#     with open(db_info_path, 'r') as f:
-#         db_info_json = json.load(f)
-#
-#     if db not in db_info_json:
-#         raise ValueError(f"Unknown db '{db}'")
-#
-#     brand_info = db_info_json[db][brand]
-#
-#     # 如果指定了国家
-#     if market:
-#         # 检查国家是否在品牌信息中
-#         if market in brand_info:
-#             return brand_info[market]
-#         # 如果没有找到具体国家的信息，检查是否有默认信息
-#         if 'default' in brand_info:
-#             return brand_info['default']
-#
-#     # 返回默认信息
-#     return brand_info.get('default', {})
-#
-# def load_db_info_log(db,brand,market):
-#     # 从 JSON 文件加载数据库信息
-#     db_info_path = os.path.join(get_config_path(), 'db_info_log.json')
-#     with open(db_info_path, 'r') as f:
-#         db_info_json = json.load(f)
-#
-#     if db not in db_info_json:
-#         raise ValueError(f"Unknown db '{db}'")
-#
-#     brand_info = db_info_json[db][brand]
-#
-#     # 如果指定了国家
-#     if market:
-#         # 检查国家是否在品牌信息中
-#         if market in brand_info:
-#             return brand_info[market]
-#         # 如果没有找到具体国家的信息，检查是否有默认信息
-#         if 'default' in brand_info:
-#             return brand_info['default']
-#
-#     # 返回默认信息
-#     return brand_info.get('default', {})
-#
-# def campaign_info(db, brand, market,num):
-#     query = f"""
-# WITH campaign_list AS (
-#             SELECT DISTINCT campaignId
-#             FROM amazon_campaigns_list_sp
-#             WHERE state = 'ENABLED'
-#             AND targetingtype = 'MANUAL'
-#             AND market = '{market}'
-#             AND LOWER(campaign_name) LIKE '%deep%'
-#             AND LOWER(campaign_name) LIKE '%0514%'
-#             and startDate < DATE_SUB(CURDATE(), INTERVAL 0 DAY )
-#
-# )
-# SELECT
-#     a.campaignId,
-#     CASE
-#         -- 如果 count(1) 为 NULL，使用 0 代替，并且如果 700 - count(1) > 400，则返回 400
-#         WHEN {int(float(num))+200} - IFNULL(COUNT(b.targetId), 0) > 400 THEN 400
-#         ELSE {int(float(num))+200} - IFNULL(COUNT(b.targetId), 0)
-#     END AS calculated_value
-# FROM
-#     campaign_list a
-# LEFT JOIN
-#     amazon_targets_list_sp b
-#     ON a.campaignId = b.campaignId
-#     AND b.expression LIKE '%EXPANDED%'
-#     AND b.state = 'ENABLED'
-# GROUP BY
-# 		a.campaignId
-# HAVING
-#     -- 如果 count(1) 为 NULL 或者 count(1) 小于 500，仍然返回结果
-#     IFNULL(COUNT(b.campaignId), 0) < {int(float(num))}
-#     """
-#     try:
-#         db_config = load_db_info(db, brand, market)
-#         connection = pymysql.connect(**db_config)
-#         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-#             cursor.execute(query)
-#             resultall = cursor.fetchall()
-#             return resultall
-#     finally:
-#         connection.close()
-#
-# def data_info(db, brand, market,classification_id,day):
-#     query = f"""
-# SELECT
-#     COUNT(*) AS total_last_7_days,
-#     COUNT(CASE WHEN DATE(Date) = CURRENT_DATE THEN 1 END) AS total_today
-# FROM expanded_asin_info
-# WHERE market = '{market}'
-# AND classification_id = '{classification_id}'
-# AND Date > CURRENT_DATE- INTERVAL {int(float(day))+1} DAY
-#     """
-#     try:
-#         db_config = load_db_info_log(db, brand, market)
-#         connection = pymysql.connect(**db_config)
-#         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-#             cursor.execute(query)
-#             # 获取结果的第一行
-#             result = cursor.fetchone()
-#             # 返回两个统计值: total_last_7_days 和 total_today
-#             return result['total_last_7_days'], result['total_today']
-#     finally:
-#         connection.close()
+redis_client = redis.Redis(**REDIS_CONFIG)
 
 def get_proxies(region):
     proxies = "http://192.168.2.165:7890"
@@ -194,7 +87,13 @@ async def pachong(db, brand, market, classification_rank_classification_id):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
     urls = generate_urls(market, classification_rank_classification_id)
-    all_asin_data = []
+    cache_key = f"pachong:{market}_{classification_rank_classification_id}"
+    # 尝试从 Redis 缓存中获取数据
+    cached_data = redis_client.get(cache_key)
+    if cached_data:
+        all_asin_data = json.loads(cached_data)
+    else:
+        all_asin_data = []
 
     async def extract_asin_data(url, retries=3):
         timeout = ClientTimeout(total=None, connect=None, sock_connect=None, sock_read=None)
@@ -207,7 +106,6 @@ async def pachong(db, brand, market, classification_rank_classification_id):
                             content = await response.read()  # 获取响应内容
                             tree = html.fromstring(content)  # 使用 lxml 解析 HTML
                             asin_list = []
-
                             # XPath 查询
                             product_elements = tree.xpath('//*[@data-client-recs-list]')
                             for element in product_elements:
@@ -216,7 +114,6 @@ async def pachong(db, brand, market, classification_rank_classification_id):
                                     asin_list.append(asin_value)
                                 else:
                                     print(f"请求失败，状态码: {response.status}")
-
                             if len(asin_list) > 0:
                                 return asin_list
                             else:
@@ -225,26 +122,15 @@ async def pachong(db, brand, market, classification_rank_classification_id):
                         else:
                             print(f"请求失败，状态码：{response.status}")
                             await asyncio.sleep(1)  # 如果请求失败，等待1秒后重试
-
-
                 except (aiohttp.ClientError, ssl.SSLError) as e:
-
                     print(f"Attempt {attempt + 1} failed: {e}")
-
                     if attempt < retries - 1:
-
                         await asyncio.sleep(1)  # 等待5秒后重试
-
                     else:
-
                         print("Max retries reached, giving up.")
-
                         return []
-
                 except Exception as e:
-
                     print(f"Unexpected error: {e}")
-
                     return []
 
     max_attempts = 100  # 设置最大尝试次数
@@ -266,6 +152,8 @@ async def pachong(db, brand, market, classification_rank_classification_id):
     if len(all_asin_data) < 2:
         return f"经过 {max_attempts} 次尝试后，仍未获取到分类{classification_rank_classification_id}的top100竞品ASIN"
 
+    if not cached_data:
+        redis_client.set(cache_key, json.dumps(all_asin_data), ex=60 * 60 * 12)
     updates = []
     today = datetime.today()
     cur_time = today.strftime('%Y-%m-%d')
@@ -326,8 +214,6 @@ async def expanded_asin(db,brand,market,num,day):
                     print(f"分类id：{classification_id}无需要添加的campaignId，跳过")
                     continue  # 没有找到有效的 campaignId，则跳过
             classification_rank_classification_id = classification_id
-            # loop = asyncio.get_event_loop()
-            # loop.run_until_complete(pachong(db, brand, market, classification_rank_classification_id))
             info = await pachong(db, brand, market, classification_rank_classification_id)
             massage.append(info)
         print(massage)

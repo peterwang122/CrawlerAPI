@@ -3,8 +3,10 @@ import os
 from datetime import datetime
 import aiomysql
 from tenacity import retry, stop_after_attempt, wait_fixed
-import pymysql
-from configuration.path import get_config_path
+import redis
+from config import REDIS_CONFIG
+from typing import Dict, Any
+from util.automatic_configuration import update_configuration
 
 
 class BaseDb:
@@ -16,52 +18,56 @@ class BaseDb:
             self.db_info = self.load_log_db_info()
         else:
             self.db_info = self.load_db_info()
+        self.redis_client = redis.Redis(**REDIS_CONFIG)  # 使用 config 中的 Redis 配置
         self.conn = None
 
-    def load_db_info(self):
-        # 从 JSON 文件加载数据库信息
-        db_info_path = os.path.join(get_config_path(), 'db_info.json')
-        with open(db_info_path, 'r') as f:
-            db_info_json = json.load(f)
-        if self.db not in db_info_json:
-            raise ValueError(f"Unknown db '{self.db}'")
+    def load_db_info(self) -> Dict[str, Any]:
+        # 生成缓存键
+        cache_key = f"db_info:{self.db}"
+        print(f"缓存键: {cache_key}")
 
-        brand_info = db_info_json[self.db][self.brand]
+        # 尝试从 Redis 缓存中获取数据
+        cached_data = self.redis_client.get(cache_key)
+        if cached_data:
+            print(f"缓存数据: {cached_data}")
+            # 如果缓存中有数据，直接返回
+            return json.loads(cached_data)
+        else:
+            print("缓存未命中，更新配置...")
+            # 更新配置并获取新的数据库信息
+            update_configuration(self.db)
 
-        # 如果指定了国家
-        if self.market:
-            # 检查国家是否在品牌信息中
-            if self.market in brand_info:
-                return brand_info[self.market]
-            # 如果没有找到具体国家的信息，检查是否有默认信息
-            if 'default' in brand_info:
-                return brand_info['default']
+            # 再次尝试从缓存中获取数据
+            cached_data = self.redis_client.get(cache_key)
+            if cached_data:
+                print(f"更新后缓存数据: {cached_data}")
+                return json.loads(cached_data)
+            else:
+                raise ValueError(f"无法加载数据库信息: {self.db}")
 
-        # 返回默认信息
-        return brand_info.get('default', {})
+    def load_log_db_info(self) -> Dict[str, Any]:
+        # 生成缓存键
+        cache_key = f"db_info_log:{self.db}"
+        print(f"缓存键: {cache_key}")
 
-    def load_log_db_info(self):
-        # 从 JSON 文件加载数据库信息
-        db_info_path = os.path.join(get_config_path(), 'db_info_log.json')
-        with open(db_info_path, 'r') as f:
-            db_info_json = json.load(f)
+        # 尝试从 Redis 缓存中获取数据
+        cached_data = self.redis_client.get(cache_key)
+        if cached_data:
+            print(f"缓存数据: {cached_data}")
+            # 如果缓存中有数据，直接返回
+            return json.loads(cached_data)
+        else:
+            print("缓存未命中，更新配置...")
+            # 更新配置并获取新的数据库信息
+            update_configuration(self.db)
 
-        if self.db not in db_info_json:
-            raise ValueError(f"Unknown db '{self.db}'")
-
-        brand_info = db_info_json[self.db][self.brand]
-
-        # 如果指定了国家
-        if self.market:
-            # 检查国家是否在品牌信息中
-            if self.market in brand_info:
-                return brand_info[self.market]
-            # 如果没有找到具体国家的信息，检查是否有默认信息
-            if 'default' in brand_info:
-                return brand_info['default']
-
-        # 返回默认信息
-        return brand_info.get('default', {})
+            # 再次尝试从缓存中获取数据
+            cached_data = self.redis_client.get(cache_key)
+            if cached_data:
+                print(f"更新后缓存数据: {cached_data}")
+                return json.loads(cached_data)
+            else:
+                raise ValueError(f"无法加载数据库信息: {self.db}")
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
     async def connect(self, db_info):

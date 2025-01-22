@@ -14,9 +14,13 @@ from lxml import html
 import json
 import csv
 import time
+import redis
+from config import REDIS_CONFIG
 from db.tools_db_new_sp import DbNewSpTools
 from db.tools_db_sp import DbSpTools
 from configuration.path import get_config_path
+
+redis_client = redis.Redis(**REDIS_CONFIG)
 
 def get_proxies(region):
     proxies = "http://192.168.2.165:7890"
@@ -96,18 +100,23 @@ def generate_urls(market):
         raise f"不支持该国家的 Amazon 网站：{market}"
     return base_url
 
-#https://www.amazon.co.jp/s?k=スノースポーツ用ゴーグル&page=2&ref=sr_pg_2
-async def pachong(db, brand, market, search_term, cache):
+
+async def pachong(db, brand, market, search_term):
     waiting_count = 0
     MAX_WAITING_COUNT = 10
     urls = generate_urls(market)
     all_asin_data = []
+
     # 处理搜索词，若有空格则替换为 "+"
     search_term = search_term.replace(" ", "+")
-    cache_key = (market, search_term)
-    if cache_key in cache:
+    cache_key = f"pachong:{market}:{search_term}"  # Redis 缓存键
+
+    # 尝试从 Redis 缓存中获取数据
+    cached_data = redis_client.get(cache_key)
+    if cached_data:
         print(f"已缓存 {market} - {search_term} 的 ASIN，跳过爬取")
-        return cache[cache_key]
+        return json.loads(cached_data)
+
     async def extract_asin_data(url):
         while True:
             try:
@@ -126,8 +135,7 @@ async def pachong(db, brand, market, search_term, cache):
                 page = await browser.newPage()
                 # 访问目标网址
                 await page.goto(url)
-                # # 获取页面内容
-                # content = await page.content()
+                # 获取页面内容
                 asins = await page.evaluate('''() => {
                             const asins = [];
                             const elements = document.querySelectorAll('[data-asin]');
@@ -194,7 +202,7 @@ async def pachong(db, brand, market, search_term, cache):
             else:
                 break
 
-                # 记录第一页的数据量，后续页面将根据此值来判断
+        # 记录第一页的数据量，后续页面将根据此值来判断
         if page_num == 1:
             first_page_data_count = min(len(asin_data), 48)
 
@@ -206,9 +214,8 @@ async def pachong(db, brand, market, search_term, cache):
             print(f"第 {page_num} 页抓取的数据小于第一页的数据量，停止抓取后续页...")
             break  # 停止抓取后续页面
 
-
-
-    cache[cache_key] = all_asin_data
+    # 将数据存入 Redis 缓存，设置过期时间为 12 小时
+    redis_client.set(cache_key, json.dumps(all_asin_data), ex=60 * 60 * 12)
     print(f"all_asin_data:{all_asin_data}")
     return all_asin_data
 

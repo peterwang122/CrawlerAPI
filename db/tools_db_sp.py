@@ -237,7 +237,7 @@ WITH campaign_list AS (
             AND market = '{self.market}'
             AND LOWER(campaign_name) LIKE '%deep%'
             AND LOWER(campaign_name) LIKE '%0514%'
-            and startDate < DATE_SUB(CURDATE(), INTERVAL 0 DAY )
+#             and startDate < DATE_SUB(CURDATE(), INTERVAL 0 DAY )
 
 )
 SELECT
