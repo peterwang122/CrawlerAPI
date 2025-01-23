@@ -4,6 +4,7 @@ from datetime import datetime
 
 from sanic import Sanic
 from sanic.response import json
+import json
 from sanic.request import Request
 import time
 import hashlib
@@ -11,13 +12,15 @@ from log.logger_config import logger
 import json as json_lib
 import atexit
 import smtplib
+import redis
+from config import REDIS_CONFIG
 from util.list_api import list_api
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 
 app = Sanic(__name__)
-
+redis_client = redis.Redis(**REDIS_CONFIG)
 # 验证函数
 def verify_request(token, timestamp, secret_key):
     # 计算token
@@ -37,19 +40,28 @@ async def handle_exception(request, exception):
     full_stack =traceback.print_exc()
     return json({"error": str(exception)}, status=500)
 
-# 创建一个队列，用于存放任务
-task_queue = asyncio.Queue()
 
+# 用于顺序执行任务的消费者任务
 # 用于顺序执行任务的消费者任务
 async def task_runner():
     while True:
-        # 从队列中获取任务并执行
-        data = await task_queue.get()  # 阻塞，直到有任务被放入队列
-        if data is None:
-            break  # 如果收到None，则退出
-        await list_api(data)
-        task_queue.task_done()  # 标记任务已完成
+        # 从 Redis 队列中获取任务
+        task = redis_client.lpop('task_queue')
+        if task is None:
+            await asyncio.sleep(1)  # 如果队列为空，等待 1 秒后重试
+            continue
 
+        # 解析任务数据
+        data = json.loads(task)
+        print(f"Dequeued task: {data}")
+
+        # 执行任务
+        await list_api(data)
+
+        # 标记任务完成
+        print(f"Task completed: {data}")
+
+# 在应用启动时加载未完成的任务
 @app.before_server_start
 async def setup(app, loop):
     # 启动任务处理的消费者
@@ -74,7 +86,9 @@ async def handle_list(request: Request):
 
     if not data.get("text") or data["text"] == "":
         return json({"status": 404, "error": "The 'text' field cannot be an empty string."})
-    await task_queue.put(data)
+    # 将任务放入 Redis 队列
+    redis_client.rpush('task_queue', json.dumps(data))
+    print(f"Enqueued task: {data}")
     # code, info, e = result  # 从结果中解包任务返回的值（同步阻塞，等待任务完成）
     return json({"status": 200, "info": "Task started successfully."})
 
