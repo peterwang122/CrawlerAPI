@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y tzdata
 ## 配置国内镜像源（这里以阿里云镜像为例）
 #RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
-WORKDIR /app-flask
-COPY . /app-flask
+WORKDIR /crawlerapi
+COPY . /crawlerapi
 RUN pip config set global.index-url https://pypi.org/simple
 # 安装依赖
 RUN pip install --no-cache-dir --no-deps --ignore-requires-python -r requirements.txt
