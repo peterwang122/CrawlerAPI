@@ -14,7 +14,7 @@ class BaseDb:
         self.brand = brand
         self.market = market
         self.db = db
-        self.redis_client = redis.Redis(**REDIS_CONFIG)  # 使用 config 中的 Redis 配置
+        self.redis_client = redis.Redis(db=11,**REDIS_CONFIG)  # 使用 config 中的 Redis 配置
         if log:
             self.db_info = self.load_log_db_info()
         else:

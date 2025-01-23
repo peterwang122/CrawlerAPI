@@ -18,7 +18,7 @@ from config import REDIS_CONFIG
 from db.tools_db_new_sp import DbNewSpTools
 from db.tools_db_sp import DbSpTools
 
-redis_client = redis.Redis(**REDIS_CONFIG)
+redis_client = redis.Redis(db=12,**REDIS_CONFIG)
 
 def get_proxies(region):
     proxies = "http://192.168.2.165:7890"

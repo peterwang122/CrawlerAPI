@@ -8,11 +8,16 @@ from configuration.path import get_config_path
 import redis
 from config import REDIS_CONFIG
 
-redis_client = redis.Redis(**REDIS_CONFIG)
+redis_client = redis.Redis(db=11,**REDIS_CONFIG)
 
 
 def automatic_configuration():
-    redis_client.flushall()  # 清除所有缓存
+    # 切换到目标数据库（例如数据库 1）
+    redis_client.select(11)
+
+    # 清空当前数据库（数据库 1）
+    redis_client.flushdb()
+
     print("Redis 缓存已清除")
     data = {
         "CloseFlag": 0  # 1 关闭的 0 没有关闭的

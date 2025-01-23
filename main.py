@@ -20,7 +20,7 @@ from email.mime.text import MIMEText
 
 
 app = Sanic(__name__)
-redis_client = redis.Redis(**REDIS_CONFIG)
+redis_client = redis.Redis(db=12,**REDIS_CONFIG)
 # 验证函数
 def verify_request(token, timestamp, secret_key):
     # 计算token
