@@ -259,5 +259,5 @@ async def expanded_asin(db,brand,market,num,day):
 
 
 if __name__ == "__main__":
-    asyncio.run(expanded_asin('amazon_64_ZAPJQL', 'ZAPJQL', 'JP', 500, 5))
+    asyncio.run(expanded_asin('amazon_131_NDL_UK', 'Lishetimig', 'UK', 800, 5))
 
