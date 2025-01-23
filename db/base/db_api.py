@@ -25,12 +25,10 @@ class BaseDb:
     def load_db_info(self) -> Dict[str, Any]:
         # 生成缓存键
         cache_key = f"db_info:{self.db}"
-        print(f"缓存键: {cache_key}")
 
         # 尝试从 Redis 缓存中获取数据
         cached_data = self.redis_client.get(cache_key)
         if cached_data:
-            print(f"缓存数据: {cached_data}")
             # 如果缓存中有数据，直接返回
             return json.loads(cached_data)
         else:
@@ -49,12 +47,10 @@ class BaseDb:
     def load_log_db_info(self) -> Dict[str, Any]:
         # 生成缓存键
         cache_key = f"db_info_log:{self.db}"
-        print(f"缓存键: {cache_key}")
 
         # 尝试从 Redis 缓存中获取数据
         cached_data = self.redis_client.get(cache_key)
         if cached_data:
-            print(f"缓存数据: {cached_data}")
             # 如果缓存中有数据，直接返回
             return json.loads(cached_data)
         else:
