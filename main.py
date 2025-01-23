@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 from sanic import Sanic
-from sanic.response import json
+from sanic.response import json as json_sanic
 import json
 from sanic.request import Request
 import time
@@ -38,7 +38,7 @@ async def handle_exception(request, exception):
     print(f"An error occurred: {exception}")
     import traceback
     full_stack =traceback.print_exc()
-    return json({"error": str(exception)}, status=500)
+    return json_sanic({"error": str(exception)}, status=500)
 
 
 # 用于顺序执行任务的消费者任务
@@ -82,15 +82,15 @@ async def handle_list(request: Request):
     # 验证请求头
     secret_key = "69c5fcebaa65b560eaf06c3fbeb481ae44b8d618"  # 测试环境的秘钥, 根据环境配置选择秘钥
     if not verify_request(token, timestamp, secret_key):
-        return json({"error": "Unauthorized"}, status=401)
+        return json_sanic({"error": "Unauthorized"}, status=401)
 
     if not data.get("text") or data["text"] == "":
-        return json({"status": 404, "error": "The 'text' field cannot be an empty string."})
+        return json_sanic({"status": 404, "error": "The 'text' field cannot be an empty string."})
     # 将任务放入 Redis 队列
     redis_client.rpush('task_queue', json.dumps(data))
     print(f"Enqueued task: {data}")
     # code, info, e = result  # 从结果中解包任务返回的值（同步阻塞，等待任务完成）
-    return json({"status": 200, "info": "Task started successfully."})
+    return json_sanic({"status": 200, "info": "Task started successfully."})
 
 
 if __name__ == '__main__':
