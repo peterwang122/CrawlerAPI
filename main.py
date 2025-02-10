@@ -86,8 +86,13 @@ async def handle_list(request: Request):
 
     if not data.get("text") or data["text"] == "":
         return json_sanic({"status": 404, "error": "The 'text' field cannot be an empty string."})
+
+    # 检查任务是否已存在
+    task_json = json.dumps(data)  # 标准化任务数据
+    if task_json in redis_client.lrange('task_queue', 0, -1):  # 检查整个队列
+        return json_sanic({"status": 200, "info": "Task already exists in the queue."})
     # 将任务放入 Redis 队列
-    redis_client.rpush('task_queue', json.dumps(data))
+    redis_client.rpush('task_queue', task_json)
     print(f"Enqueued task: {data}")
     # code, info, e = result  # 从结果中解包任务返回的值（同步阻塞，等待任务完成）
     return json_sanic({"status": 200, "info": "Task started successfully."})

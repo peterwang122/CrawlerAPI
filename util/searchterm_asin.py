@@ -3,6 +3,7 @@ import multiprocessing
 import os
 from decimal import Decimal
 from datetime import datetime, timedelta
+import datetime
 from bs4 import BeautifulSoup
 import aiohttp
 import pandas as pd
@@ -92,7 +93,11 @@ def generate_urls(market):
     "AU": "https://www.amazon.com.au/",
     "CA": "https://www.amazon.ca/",
     "MX": "https://www.amazon.com.mx/",
-    "AE": "https://www.amazon.ae/"
+    "AE": "https://www.amazon.ae/",
+    "BE": "https://www.amazon.com.be/",
+    "NL": "https://www.amazon.nl/",
+    "PL": "https://www.amazon.pl/",
+    "SE": "https://www.amazon.se/"
 }
     base_url = url_templates.get(market.upper())
     if not base_url:
@@ -121,18 +126,36 @@ async def pachong(db, brand, market, search_term):
         while True:
             try:
                 print(url)
+                # 获取当前时间
+                now = datetime.datetime.now()
+                hour = now.hour
+                minute = now.minute
                 # 设置代理和其他启动选项
-                browser = await pyppeteer.launch({
-                    'headless': True,  # 启动无头浏览器
-                    'args': [
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--proxy-server=http://192.168.2.165:7890'  # 设置代理
-                    ]
-                })
+                if 7 <= hour < 9 or (hour == 9 and minute <= 30):
+                    browser = await pyppeteer.launch({
+                        'headless': True,  # 启动无头浏览器
+                        'args': [
+                            '--no-sandbox',
+                            '--disable-setuid-sandbox',
+                            '--proxy-server=http://tun-xqcbgv.qg.net:10775',  # 设置代理
+                        ]
+                    })
 
-                # 创建新页面
-                page = await browser.newPage()
+                    # 创建新页面
+                    page = await browser.newPage()
+                    await page.authenticate({'username': 'D9862169', 'password': '65AC0C17C145'})
+                else:
+                    browser = await pyppeteer.launch({
+                        'headless': True,  # 启动无头浏览器
+                        'args': [
+                            '--no-sandbox',
+                            '--disable-setuid-sandbox',
+                            '--proxy-server=http://192.168.2.165:7890'  # 设置代理
+                        ]
+                    })
+
+                    # 创建新页面
+                    page = await browser.newPage()
                 # 访问目标网址
                 await page.goto(url)
                 # 获取页面内容

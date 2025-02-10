@@ -59,7 +59,7 @@ AND Date > CURRENT_DATE- INTERVAL {int(float(day)) + 1} DAY
             async with conn.cursor(aiomysql.DictCursor) as cursor:
                 await cursor.execute(query)
                 result = await cursor.fetchall()
-                return result[0]['total_last_7_days'], result[0]['total_today']
+                return result['total_last_7_days'], result['total_today']
         except Exception as error:
             # print("get_profileId Error while querying data:", error)
             return None,None

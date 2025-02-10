@@ -75,6 +75,22 @@ def generate_urls(market, classification_rank_classification_id):
     "AE": [
         "https://www.amazon.ae/gp/bestsellers/pet-products/{}/ref=zg_bs_pg_1_pet-products?ie=UTF8&pg=1",
         "https://www.amazon.ae/gp/bestsellers/pet-products/{}/ref=zg_bs_pg_2_pet-products?ie=UTF8&pg=2"
+    ],
+    "BE": [
+        "https://www.amazon.com.be/-/en/gp/bestsellers/home/{}/ref=zg_bs_pg_1_home?ie=UTF8&pg=1",
+        "https://www.amazon.com.be/-/en/gp/bestsellers/home/{}/ref=zg_bs_pg_2_home?ie=UTF8&pg=2"
+    ],
+    "NL": [
+        "https://www.amazon.nl/gp/bestsellers/home/{}/ref=zg_bs_pg_1_home?ie=UTF8&pg=1",
+        "https://www.amazon.nl/gp/bestsellers/home/{}/ref=zg_bs_pg_2_home?ie=UTF8&pg=2"
+    ],
+    "PL": [
+        "https://www.amazon.pl/gp/bestsellers/kitchen/{}/ref=zg_bs_pg_1_kitchen?ie=UTF8&pg=1",
+        "https://www.amazon.pl/gp/bestsellers/kitchen/{}/ref=zg_bs_pg_2_kitchen?ie=UTF8&pg=2"
+    ],
+    "SE": [
+        "https://www.amazon.se/gp/bestsellers/fashion/{}/ref=zg_bs_pg_1_fashion?ie=UTF8&pg=1",
+        "https://www.amazon.se/gp/bestsellers/fashion/{}/ref=zg_bs_pg_2_fashion?ie=UTF8&pg=2"
     ]
     }
     if market not in url_templates:
