@@ -89,7 +89,8 @@ async def handle_list(request: Request):
 
     # 检查任务是否已存在
     task_json = json.dumps(data)  # 标准化任务数据
-    if task_json in redis_client.lrange('task_queue', 0, -1):  # 检查整个队列
+    res = redis_client.lrange('task_queue', 0, -1)
+    if any(task.decode('utf-8') == task_json for task in res):
         return json_sanic({"status": 200, "info": "Task already exists in the queue."})
     # 将任务放入 Redis 队列
     redis_client.rpush('task_queue', task_json)
