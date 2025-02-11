@@ -117,7 +117,7 @@ async def handle_task(request: Request):
     # 检查重复任务
     task_json = json.dumps(data, sort_keys=True)  # 标准化JSON
     existing_tasks = redis_client.lrange(target_queue, 0, -1)
-    if any(task.decode() == task_json for task in existing_tasks):
+    if any(task.decode('utf-8') == task_json for task in existing_tasks):
         return json_sanic({
             "status": 200,
             "info": "任务已存在",

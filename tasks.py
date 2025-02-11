@@ -8,11 +8,20 @@ TASK_QUEUES = {
     "SearchtermCrawlerAsin": "high_priority_queue",  # 高优先级队列
     "CrawlerAsin": "low_priority_queue"  # 普通优先级队列
 }
+
+
 def migrate_tasks():
     old_queue = 'task_queue'
     new_queue_mapping = {
-        'high_priority_queue': 0,  # 假设旧任务60%为高优先级
-        'low_priority_queue': 0  # 40%为低优先级
+        'high_priority_queue': 0,
+        'low_priority_queue': 0,
+        'default_queue': 0  # 新增默认队列
+    }
+
+    # 明确定义任务类型映射
+    TASK_TYPE_MAPPING = {
+        "SearchtermCrawlerAsin": "high_priority_queue",
+        "CrawlerAsin": "low_priority_queue"
     }
 
     while True:
@@ -20,17 +29,26 @@ def migrate_tasks():
         if not task:
             break
 
-        # 解析任务判断类型（根据实际业务逻辑调整）
-        data = json.loads(task)
-        if 'position' in data:  # 如果旧数据已有类型标识
-            target = TASK_QUEUES.get(data['position'], 'low_priority_queue')
-        else:  # 无类型则根据业务规则判断
-            target = 'high_priority_queue' if data.get('position') else 'low_priority_queue'
+        try:
+            data = json.loads(task)
+            task_type = data.get('position')
 
-        r.rpush(target, task)
-        new_queue_mapping[target] += 1
+            # 严格类型判断
+            if task_type in TASK_TYPE_MAPPING:
+                target = TASK_TYPE_MAPPING[task_type]
+            else:
+                target = 'default_queue'  # 未定义类型进入默认队列
 
-    print(f"迁移完成，分布: {new_queue_mapping}")
+            r.rpush(target, task)
+            new_queue_mapping[target] += 1
+
+        except json.JSONDecodeError:
+            print(f"无效任务数据: {task}")
+            r.rpush('corrupted_tasks', task)  # 异常数据单独存放
+
+    print("迁移结果统计:")
+    for queue, count in new_queue_mapping.items():
+        print(f"{queue}: {count} tasks")
 
 
 if __name__ == '__main__':
