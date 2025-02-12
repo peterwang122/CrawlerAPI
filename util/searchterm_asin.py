@@ -3,7 +3,6 @@ import multiprocessing
 import os
 from decimal import Decimal
 from datetime import datetime, timedelta
-import datetime
 from bs4 import BeautifulSoup
 import aiohttp
 import pandas as pd
@@ -127,11 +126,11 @@ async def pachong(db, brand, market, search_term):
             try:
                 print(url)
                 # 获取当前时间
-                now = datetime.datetime.now()
+                now = datetime.now()
                 hour = now.hour
                 minute = now.minute
                 # 设置代理和其他启动选项
-                if 7 <= hour < 9 or (hour == 9 and minute <= 30):
+                if 7 <= hour < 10 :
                     browser = await pyppeteer.launch({
                         'headless': True,  # 启动无头浏览器
                         'args': [

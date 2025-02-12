@@ -24,9 +24,23 @@ redis_client = redis.Redis(db=12,**REDIS_CONFIG)
 # 验证函数
 # 定义双队列映射
 TASK_QUEUES = {
-    "SearchtermCrawlerAsin": "high_priority_queue",  # 高优先级队列
-    "CrawlerAsin": "low_priority_queue"  # 普通优先级队列
+    "SearchtermCrawlerAsin": ["high_priority_queue_NA", "high_priority_queue_EU", "high_priority_queue_FE"],
+    "CrawlerAsin": "low_priority_queue"
 }
+
+
+# 新增地区映射判断函数
+def determine_queue(market):
+    """根据market参数确定地区队列"""
+    market = str(market).upper()
+    na_markets = {"US", "MX", "CA", "BR"}
+    fe_markets = {"JP", "AU", "SG"}
+
+    if market in na_markets:
+        return "high_priority_queue_NA"
+    if market in fe_markets:
+        return "high_priority_queue_FE"
+    return "high_priority_queue_EU"  # 其他情况默认EU队列
 
 
 def verify_request(token, timestamp, secret_key):
@@ -112,12 +126,30 @@ async def handle_task(request: Request):
         }, status=400)
 
     # 确定目标队列
-    target_queue = TASK_QUEUES[task_type]
+    if task_type == "SearchtermCrawlerAsin":
+        if not data.get("market"):
+            return json_sanic({"error": "高优先级任务必须包含market参数"}, status=400)
+        target_queue = determine_queue(data["market"])
+    else:
+        target_queue = TASK_QUEUES[task_type]
 
     # 检查重复任务
-    task_json = json.dumps(data, sort_keys=True)  # 标准化JSON
-    existing_tasks = redis_client.lrange(target_queue, 0, -1)
-    if any(task.decode('utf-8') == task_json for task in existing_tasks):
+    task_json = json.dumps(data, sort_keys=True)
+    duplicate = False
+
+    # 根据任务类型决定检查范围
+    if task_type == "SearchtermCrawlerAsin":
+        check_queues = TASK_QUEUES["SearchtermCrawlerAsin"]
+    else:
+        check_queues = [target_queue]
+
+    for q in check_queues:
+        existing_tasks = redis_client.lrange(q, 0, -1)
+        if any(task.decode('utf-8') == task_json for task in existing_tasks):
+            duplicate = True
+            break
+
+    if duplicate:
         return json_sanic({
             "status": 200,
             "info": "任务已存在",
