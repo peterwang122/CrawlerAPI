@@ -51,10 +51,33 @@ def verify_request(token, timestamp, secret_key):
     return token == calculated_token
 
 
+@app.before_server_start
+async def setup(app, _):
+    """服务启动初始化（完整修复版）"""
+    # 展开所有队列配置（处理列表和字符串类型）
+    all_queues = []
+    for q in TASK_QUEUES.values():
+        if isinstance(q, list):
+            all_queues.extend([str(queue) for queue in q])
+        else:
+            all_queues.append(str(q))
+
+    # 为每个物理队列启动独立消费者
+    for queue in set(all_queues):  # 去重确保唯一性
+        app.add_task(task_processor(queue))
+
+    # 超时设置保持不变
+    app.config.REQUEST_TIMEOUT = 1800
+    app.config.RESPONSE_TIMEOUT = 1800
+
+
 async def task_processor(queue_name: str):
-    """通用任务处理器"""
+    """通用任务处理器（完整修复版）"""
     while True:
         try:
+            # 强制类型转换确保安全
+            queue_name = str(queue_name)
+
             # 原子性获取任务
             task = redis_client.lpop(queue_name)
             if not task:
@@ -73,22 +96,17 @@ async def task_processor(queue_name: str):
             print(f"无效任务数据: {task}")
         except Exception as e:
             print(f"任务处理失败: {str(e)}")
-            # 失败重试逻辑
-            if redis_client.llen(queue_name) < 1000:  # 防止队列膨胀
-                redis_client.rpush(queue_name, task)
-                print(f"任务重新入队: {task}")
-
-
-@app.before_server_start
-async def setup(app, _):
-    """服务启动初始化"""
-    # 为每个队列启动独立消费者
-    for queue in TASK_QUEUES.values():
-        app.add_task(task_processor(queue))
-
-    # 超时设置
-    app.config.REQUEST_TIMEOUT = 1800
-    app.config.RESPONSE_TIMEOUT = 1800
+            # 增强的重试逻辑
+            try:
+                current_length = redis_client.llen(queue_name)
+                if current_length < 1000:
+                    # 使用管道保证原子性操作
+                    with redis_client.pipeline() as pipe:
+                        pipe.rpush(queue_name, task)
+                        pipe.execute()
+                    print(f"任务重新入队: {task}")
+            except Exception as pipe_error:
+                print(f"重试入队失败: {str(pipe_error)}")
 
 
 @app.exception(Exception)
