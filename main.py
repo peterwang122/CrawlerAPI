@@ -18,49 +18,55 @@ from util.list_api import list_api
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-
 app = Sanic(__name__)
-redis_client = redis.Redis(db=12,**REDIS_CONFIG)
-# 验证函数
-# 定义双队列映射
+redis_client = redis.Redis(db=12, **REDIS_CONFIG)
+
+
 class AppState:
     running = False
+    active_tasks = set()
+    worker_queues = {}  # 记录各工作进程处理的队列
 
 
-# 队列配置
 TASK_QUEUES = {
     "SearchtermCrawlerAsin": ["high_priority_queue_NA", "high_priority_queue_EU", "high_priority_queue_FE"],
     "CrawlerAsin": ["low_priority_queue"]
 }
 
 
-# 地区映射判断
 def determine_queue(market):
-    """根据market参数确定地区队列"""
     market = str(market).upper()
     na_markets = {"US", "MX", "CA", "BR"}
     fe_markets = {"JP", "AU", "SG"}
-
-    if market in na_markets:
-        return "high_priority_queue_NA"
-    if market in fe_markets:
-        return "high_priority_queue_FE"
-    return "high_priority_queue_EU"
+    return "high_priority_queue_NA" if market in na_markets else \
+        "high_priority_queue_FE" if market in fe_markets else \
+            "high_priority_queue_EU"
 
 
-# 生命周期管理
 @app.before_server_start
 async def setup(app, _):
-    """服务启动初始化"""
     AppState.running = True
-    all_queues = []
-    for q in TASK_QUEUES.values():
-        all_queues.extend(q if isinstance(q, list) else [q])
+    worker_id = os.getenv("SANIC_WORKER_NAME", "main")
 
-    print(f"初始化队列处理器: {set(all_queues)}")
-    for queue in set(all_queues):
+    # 分配当前工作进程处理的队列
+    all_queues = [q for sublist in TASK_QUEUES.values() for q in sublist]
+    worker_index = int(worker_id.split("-")[-1]) if worker_id != "main" else 0
+    assigned_queues = [all_queues[worker_index % len(all_queues)]]
+
+    AppState.worker_queues[worker_id] = assigned_queues
+    print(f"Worker {worker_id} 负责队列: {assigned_queues}")
+
+    # 初始化浏览器配置
+    app.config.PYPPETEER_ARGS = [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        f'--user-data-dir=/tmp/pyppeteer_{worker_id}',
+        f'--remote-debugging-port={9222 + worker_index}'
+    ]
+
+    # 启动队列处理器
+    for queue in assigned_queues:
         app.add_task(task_processor(queue))
-        print(f"已启动处理器: {queue}")
 
     app.config.REQUEST_TIMEOUT = 1800
     app.config.RESPONSE_TIMEOUT = 1800
@@ -68,49 +74,78 @@ async def setup(app, _):
 
 @app.before_server_stop
 async def teardown(app, _):
-    """服务停止清理"""
     AppState.running = False
-    print("正在关闭所有队列处理器...")
+    worker_id = os.getenv("SANIC_WORKER_NAME", "main")
+
+    # 等待任务完成
+    start_time = time.time()
+    while AppState.active_tasks and (time.time() - start_time) < 30:
+        print(f"Worker {worker_id} 等待任务完成 (剩余: {len(AppState.active_tasks)})...")
+        await asyncio.sleep(1)
+
+    # 取消剩余任务
+    for task in AppState.active_tasks.copy():
+        task.cancel()
+
+    # 清理浏览器资源
+    await pyppeteer.__pyppeteer_launcher.killChrome()
+    print(f"Worker {worker_id} 资源清理完成")
 
 
-# 任务处理器
 async def task_processor(queue_name: str):
-    """带生命周期管理的任务处理器"""
-    while AppState.running:
-        try:
-            queue_name = str(queue_name)
-            task = redis_client.lpop(queue_name)
+    current_task = asyncio.current_task()
+    AppState.active_tasks.add(current_task)
 
-            if not task:
-                await asyncio.sleep(0.5)
+    try:
+        while AppState.running:
+            task_data = await fetch_task(queue_name)
+            if not task_data:
                 continue
 
-            data = json.loads(task)
-            print(f"[{queue_name}] 开始处理任务: {data}")
-            await list_api(data)
-            print(f"[{queue_name}] 任务完成: {data}")
+            try:
+                await process_task(queue_name, task_data)
+            except Exception as e:
+                await handle_task_error(queue_name, task_data, e)
+    finally:
+        AppState.active_tasks.discard(current_task)
 
-        except asyncio.CancelledError:
-            print(f"{queue_name} 处理器正在退出...")
-            break
-        except json.JSONDecodeError:
-            print(f"无效任务数据: {task}")
-        except Exception as e:
-            print(f"任务处理失败: {str(e)}")
-            await handle_retry(queue_name, task)
+
+async def fetch_task(queue_name):
+    try:
+        task = redis_client.lpop(queue_name)
+        if task:
+            return json.loads(task)
+        await asyncio.sleep(0.1)
+    except Exception as e:
+        print(f"获取任务失败: {str(e)}")
+    return None
+
+
+async def process_task(queue_name, task_data):
+    print(f"[{queue_name}] 开始处理任务: {task_data}")
+    try:
+        await asyncio.wait_for(
+            list_api(task_data),
+            timeout=1800
+        )
+        print(f"[{queue_name}] 任务完成: {task_data}")
+    except asyncio.TimeoutError:
+        print(f"[{queue_name}] 任务超时: {task_data}")
+        await handle_retry(queue_name, task_data)
+    except Exception as e:
+        print(f"[{queue_name}] 任务异常: {str(e)}")
+        await handle_retry(queue_name, task_data)
+
+
+async def handle_task_error(queue_name, task_data, error):
+    print(f"[{queue_name}] 任务处理失败: {str(error)}")
+    await handle_retry(queue_name, json.dumps(task_data))
 
 
 async def handle_retry(queue_name, task):
-    """重试逻辑封装"""
-    try:
-        if redis_client.llen(queue_name) < 1000:
-            with redis_client.pipeline() as pipe:
-                pipe.rpush(queue_name, task)
-                pipe.execute()
-            print(f"任务重新入队: {task}")
-    except Exception as e:
-        print(f"重试入队失败: {str(e)}")
-
+    if redis_client.llen(queue_name) < 1000:
+        redis_client.rpush(queue_name, task)
+        print(f"任务重新入队: {task}")
 
 # 监控接口
 @app.route('/queues/status', methods=['GET'])
@@ -224,4 +259,10 @@ async def handle_task(request: Request):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    worker_count = len(TASK_QUEUES["SearchtermCrawlerAsin"]) + len(TASK_QUEUES["CrawlerAsin"])
+    app.run(host='0.0.0.0', port=8000,
+        workers=worker_count,
+        single_process=False,
+        access_log=False,
+        auto_reload=False
+    )
