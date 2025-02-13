@@ -191,18 +191,18 @@ async def pachong(db, brand, market, search_term):
                 if len(asins) > 2:
                     return asin_list
                 else:
-                    await asyncio.sleep(random.uniform(3, 5))  # 如果请求失败，等待5秒后重试
+                    # await asyncio.sleep(random.uniform(3, 5))  # 如果请求失败，等待5秒后重试
                     return None
             except requests.exceptions.RequestException as e:
                 # 捕获所有请求相关的异常
                 print(f"请求失败，错误信息：{e}")
-                await asyncio.sleep(random.uniform(3, 5))  # 等待5秒后重试
+                # await asyncio.sleep(random.uniform(3, 5))  # 等待5秒后重试
                 return None
             finally:
                 await browser.close()
 
     for page_num in range(1, 8):
-        await asyncio.sleep(random.uniform(3, 5))
+        # await asyncio.sleep(random.uniform(3, 5))
         consecutive_empty_count = 0
         url = f"{urls}s?k={search_term}&page={page_num}&ref=sr_pg_{page_num}"
         print(f"正在处理 {market} - {search_term} 的第 {page_num} 页...")
