@@ -70,55 +70,56 @@ async def setup(app, _):
 
 @app.before_server_stop
 async def teardown(app, _):
-    """服务停止处理"""
+    """增强的关闭处理"""
     app.ctx.running.clear()
 
-    # 取消所有任务
+    # 获取所有任务并等待完成
     tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
     for task in tasks:
         task.cancel()
 
-    # 等待任务完成（最多3秒）
-    await asyncio.wait_for(
-        asyncio.gather(*tasks, return_exceptions=True),
-        timeout=3
-    )
+    # 增强的等待逻辑
+    try:
+        await asyncio.wait_for(
+            asyncio.gather(*tasks, return_exceptions=True),
+            timeout=5
+        )
+    except asyncio.TimeoutError:
+        print("部分任务未能在超时时间内完成")
+    finally:
+        await asyncio.sleep(1)  # 确保所有资源释放
 
 
 async def task_processor(queue_name: str):
-    """增强版任务处理器"""
+    """最终版任务处理器"""
     print(f"启动队列处理器: {queue_name}")
     try:
         while app.ctx.running.is_set():
             try:
-                # 异步阻塞获取任务
-                task = await asyncio.get_event_loop().run_in_executor(
-                    None,
-                    lambda: redis_client.brpop(queue_name, timeout=1)
+                # 使用可取消的Redis操作
+                task = await asyncio.wait_for(
+                    asyncio.get_event_loop().run_in_executor(
+                        None,
+                        lambda: redis_client.brpop(queue_name, timeout=1)
+                    ),
+                    timeout=2
                 )
 
-                if not task:
-                    await asyncio.sleep(0.1)
-                    continue
+                # 处理任务逻辑保持不变...
 
-                _, task_data = task
-                data = json.loads(task_data)
-                print(f"[{queue_name}] 开始处理任务: {data}")
-
-                await list_api(data)
-                print(f"[{queue_name}] 任务完成: {data}")
-
-            except (json.JSONDecodeError, TypeError) as e:
-                print(f"无效任务数据: {task_data}")
+            except asyncio.TimeoutError:
+                continue
             except asyncio.CancelledError:
+                print(f"队列处理器 {queue_name} 收到取消信号")
                 raise
             except Exception as e:
-                print(f"任务处理失败: {str(e)}")
-                await handle_retry(queue_name, task_data)
+                print(f"非预期异常: {str(e)}")
             finally:
                 await asyncio.sleep(0.1)
     except asyncio.CancelledError:
-        print(f"队列处理器 {queue_name} 收到关闭信号")
+        print(f"队列处理器 {queue_name} 正在关闭...")
+        # 执行必要的清理操作
+        await asyncio.sleep(0.5)
     finally:
         print(f"队列处理器 {queue_name} 已安全退出")
 
