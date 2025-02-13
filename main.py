@@ -208,41 +208,56 @@ async def handle_task(request: Request):
     task_json = json.dumps(data)
     duplicate = False
 
-    # 根据任务类型决定检查范围
+    # 修复队列名称处理逻辑
     if task_type == "SearchtermCrawlerAsin":
         if not data.get("market"):
             return json_sanic({"error": "高优先级任务必须包含market参数"}, status=400)
         target_queue = determine_queue(data["market"])
     else:
         # 确保获取字符串类型的队列名称
-        target_queue = TASK_QUEUES[task_type][0]  # 取列表第一个元素
+        target_queue = TASK_QUEUES[task_type][0] if isinstance(TASK_QUEUES[task_type], list) else TASK_QUEUES[task_type]
 
-    # 修改后的重复检查逻辑
-    check_queues = TASK_QUEUES[task_type] if isinstance(TASK_QUEUES[task_type], list) else [TASK_QUEUES[task_type]]
+    # 修复检查队列逻辑
+    check_queues = []
+    for queue in TASK_QUEUES[task_type]:
+        if isinstance(queue, list):
+            check_queues.extend([str(q) for q in queue])
+        else:
+            check_queues.append(str(queue))
 
     # 添加类型安全检查
     check_queues = [str(q) for q in check_queues]
 
+    # 修复后的重复检查
     for q in check_queues:
-        # 确保队列名称是字符串
-        q = str(q)
-        existing_tasks = redis_client.lrange(q, 0, -1)
-        if any(task.decode('utf-8') == task_json for task in existing_tasks):
-            return json_sanic({
-                "status": 200,
-                "info": "任务已存在",
-                "queue": target_queue
-            })
+        try:
+            # 确保队列名称是字符串
+            q = str(q)
+            existing_tasks = redis_client.lrange(q, 0, -1)
+            if any(task.decode('utf-8') == task_json for task in existing_tasks):
+                return json_sanic({
+                    "status": 200,
+                    "info": "任务已存在",
+                    "queue": target_queue
+                })
+        except redis.exceptions.DataError as e:
+            print(f"队列检查错误: {str(e)}")
+            continue
 
-    # 提交任务时也确保队列名称正确
-    redis_client.rpush(str(target_queue), task_json)
-    print(f"任务已提交到队列 {target_queue}: {data}")
+    # 提交任务时强制转换类型
+    try:
+        redis_client.rpush(str(target_queue), task_json)
+    except redis.exceptions.DataError as e:
+        return json_sanic({
+            "error": f"任务提交失败: {str(e)}",
+            "queue": target_queue
+        }, status=500)
 
     return json_sanic({
         "status": 200,
         "info": "任务提交成功",
         "queue": target_queue,
-        "position": redis_client.llen(target_queue)
+        "position": redis_client.llen(str(target_queue))
     })
 
 
