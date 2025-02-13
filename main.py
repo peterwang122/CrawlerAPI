@@ -91,37 +91,57 @@ async def teardown(app, _):
 
 
 async def task_processor(queue_name: str):
-    """最终版任务处理器"""
-    print(f"启动队列处理器: {queue_name}")
+    """安全版任务处理器（保留原始任务）"""
+    processing_queue = f"{queue_name}:processing"  # 新增处理中队列
     try:
         while app.ctx.running.is_set():
             try:
-                # 使用可取消的Redis操作
-                task = await asyncio.wait_for(
-                    asyncio.get_event_loop().run_in_executor(
-                        None,
-                        lambda: redis_client.brpop(queue_name, timeout=1)
-                    ),
-                    timeout=2
+                # 使用RPOPLPUSH保证任务安全
+                task_data = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: redis_client.rpoplpush(queue_name, processing_queue)
                 )
 
-                # 处理任务逻辑保持不变...
+                if not task_data:
+                    await asyncio.sleep(0.5)
+                    continue
 
-            except asyncio.TimeoutError:
-                continue
-            except asyncio.CancelledError:
-                print(f"队列处理器 {queue_name} 收到取消信号")
-                raise
+                data = json.loads(task_data)
+                print(f"[{queue_name}] 开始处理任务: {data}")
+
+                await list_api(data)
+
+                # 处理成功后移除处理中队列的任务
+                await asyncio.get_event_loop().run_in_executor(
+                    None, redis_client.lrem, processing_queue, 1, task_data
+                )
+                print(f"[{queue_name}] 任务完成: {data}")
+
             except Exception as e:
-                print(f"非预期异常: {str(e)}")
+                print(f"任务处理失败: {str(e)}")
+                # 将任务移回主队列
+                await asyncio.get_event_loop().run_in_executor(
+                    None, lambda: redis_client.rpush(queue_name, task_data)
+                )
+                # 从处理中队列移除
+                await asyncio.get_event_loop().run_in_executor(
+                    None, redis_client.lrem, processing_queue, 1, task_data
+                )
             finally:
                 await asyncio.sleep(0.1)
     except asyncio.CancelledError:
-        print(f"队列处理器 {queue_name} 正在关闭...")
-        # 执行必要的清理操作
-        await asyncio.sleep(0.5)
-    finally:
-        print(f"队列处理器 {queue_name} 已安全退出")
+        # 服务关闭时将处理中队列的任务移回主队列
+        processing_tasks = await asyncio.get_event_loop().run_in_executor(
+            None, redis_client.lrange, processing_queue, 0, -1
+        )
+        for task in processing_tasks:
+            await asyncio.get_event_loop().run_in_executor(
+                None, lambda: redis_client.rpush(queue_name, task)
+            )
+        await asyncio.get_event_loop().run_in_executor(
+            None, redis_client.delete, processing_queue
+        )
+        print(f"已恢复{len(processing_tasks)}个未完成任务到{queue_name}")
 
 
 async def handle_retry(queue_name, task_data):
