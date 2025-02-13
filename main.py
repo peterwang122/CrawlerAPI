@@ -210,25 +210,32 @@ async def handle_task(request: Request):
 
     # 根据任务类型决定检查范围
     if task_type == "SearchtermCrawlerAsin":
-        check_queues = TASK_QUEUES["SearchtermCrawlerAsin"]
+        if not data.get("market"):
+            return json_sanic({"error": "高优先级任务必须包含market参数"}, status=400)
+        target_queue = determine_queue(data["market"])
     else:
-        check_queues = [target_queue]
+        # 确保获取字符串类型的队列名称
+        target_queue = TASK_QUEUES[task_type][0]  # 取列表第一个元素
+
+    # 修改后的重复检查逻辑
+    check_queues = TASK_QUEUES[task_type] if isinstance(TASK_QUEUES[task_type], list) else [TASK_QUEUES[task_type]]
+
+    # 添加类型安全检查
+    check_queues = [str(q) for q in check_queues]
 
     for q in check_queues:
+        # 确保队列名称是字符串
+        q = str(q)
         existing_tasks = redis_client.lrange(q, 0, -1)
         if any(task.decode('utf-8') == task_json for task in existing_tasks):
-            duplicate = True
-            break
+            return json_sanic({
+                "status": 200,
+                "info": "任务已存在",
+                "queue": target_queue
+            })
 
-    if duplicate:
-        return json_sanic({
-            "status": 200,
-            "info": "任务已存在",
-            "queue": target_queue
-        })
-
-    # 提交任务
-    redis_client.rpush(target_queue, task_json)
+    # 提交任务时也确保队列名称正确
+    redis_client.rpush(str(target_queue), task_json)
     print(f"任务已提交到队列 {target_queue}: {data}")
 
     return json_sanic({
