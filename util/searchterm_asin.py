@@ -213,6 +213,7 @@ async def pachong(db, brand, market, search_term):
             try:
                 asin_data = await extract_asin_data(url)
             except Exception as e:
+                asin_data = None
                 print(f"爬取失败，错误：{e}")
 
             if asin_data is None:
