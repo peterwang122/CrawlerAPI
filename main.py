@@ -23,13 +23,18 @@ app = Sanic(__name__)
 redis_client = redis.Redis(db=12,**REDIS_CONFIG)
 # 验证函数
 # 定义双队列映射
+class AppState:
+    running = False
+
+
+# 队列配置
 TASK_QUEUES = {
     "SearchtermCrawlerAsin": ["high_priority_queue_NA", "high_priority_queue_EU", "high_priority_queue_FE"],
-    "CrawlerAsin": ["low_priority_queue"]  # 修改为列表格式
+    "CrawlerAsin": ["low_priority_queue"]
 }
 
 
-# 新增地区映射判断函数
+# 地区映射判断
 def determine_queue(market):
     """根据market参数确定地区队列"""
     market = str(market).upper()
@@ -40,7 +45,93 @@ def determine_queue(market):
         return "high_priority_queue_NA"
     if market in fe_markets:
         return "high_priority_queue_FE"
-    return "high_priority_queue_EU"  # 其他情况默认EU队列
+    return "high_priority_queue_EU"
+
+
+# 生命周期管理
+@app.before_server_start
+async def setup(app, _):
+    """服务启动初始化"""
+    AppState.running = True
+    all_queues = []
+    for q in TASK_QUEUES.values():
+        all_queues.extend(q if isinstance(q, list) else [q])
+
+    print(f"初始化队列处理器: {set(all_queues)}")
+    for queue in set(all_queues):
+        app.add_task(task_processor(queue))
+        print(f"已启动处理器: {queue}")
+
+    app.config.REQUEST_TIMEOUT = 1800
+    app.config.RESPONSE_TIMEOUT = 1800
+
+
+@app.before_server_stop
+async def teardown(app, _):
+    """服务停止清理"""
+    AppState.running = False
+    print("正在关闭所有队列处理器...")
+
+
+# 任务处理器
+async def task_processor(queue_name: str):
+    """带生命周期管理的任务处理器"""
+    while AppState.running:
+        try:
+            queue_name = str(queue_name)
+            task = redis_client.lpop(queue_name)
+
+            if not task:
+                await asyncio.sleep(0.5)
+                continue
+
+            data = json.loads(task)
+            print(f"[{queue_name}] 开始处理任务: {data}")
+            await list_api(data)
+            print(f"[{queue_name}] 任务完成: {data}")
+
+        except asyncio.CancelledError:
+            print(f"{queue_name} 处理器正在退出...")
+            break
+        except json.JSONDecodeError:
+            print(f"无效任务数据: {task}")
+        except Exception as e:
+            print(f"任务处理失败: {str(e)}")
+            await handle_retry(queue_name, task)
+
+
+async def handle_retry(queue_name, task):
+    """重试逻辑封装"""
+    try:
+        if redis_client.llen(queue_name) < 1000:
+            with redis_client.pipeline() as pipe:
+                pipe.rpush(queue_name, task)
+                pipe.execute()
+            print(f"任务重新入队: {task}")
+    except Exception as e:
+        print(f"重试入队失败: {str(e)}")
+
+
+# 监控接口
+@app.route('/queues/status', methods=['GET'])
+async def queue_monitor(request: Request):
+    """修复后的状态接口"""
+    status = {}
+    all_queues = []
+    for q in TASK_QUEUES.values():
+        all_queues.extend(q if isinstance(q, list) else [q])
+
+    for queue in set(all_queues):
+        oldest = redis_client.lindex(queue, 0)
+        newest = redis_client.lindex(queue, -1)
+
+        status[queue] = {
+            "pending_tasks": redis_client.llen(queue),
+            "oldest_task": oldest.decode('utf-8') if oldest else None,
+            "newest_task": newest.decode('utf-8') if newest else None
+        }
+
+    return json_sanic(status)
 
 
 def verify_request(token, timestamp, secret_key):
@@ -49,60 +140,6 @@ def verify_request(token, timestamp, secret_key):
         (secret_key + str(timestamp) + secret_key).encode('utf-8')
     ).hexdigest()
     return token == calculated_token
-
-
-@app.before_server_start
-async def setup(app, _):
-    """服务启动初始化（修复队列初始化问题）"""
-    # 统一处理队列配置（全部转为列表）
-    all_queues = []
-    for q in TASK_QUEUES.values():
-        all_queues.extend(q if isinstance(q, list) else [q])  # 统一处理为列表
-
-    # 添加队列初始化验证
-    print(f"正在监听的队列列表: {all_queues}")
-
-    # 为每个物理队列启动独立消费者
-    for queue in set(all_queues):
-        app.add_task(task_processor(queue))
-        print(f"已启动队列处理器: {queue}")  # 添加队列启动日志
-
-async def task_processor(queue_name: str):
-    """通用任务处理器（完整修复版）"""
-    while True:
-        try:
-            # 强制类型转换确保安全
-            queue_name = str(queue_name)
-
-            # 原子性获取任务
-            task = redis_client.lpop(queue_name)
-            if not task:
-                await asyncio.sleep(0.5)
-                continue
-
-            data = json.loads(task)
-            print(f"[{queue_name}] 开始处理任务: {data}")
-
-            # 执行实际任务
-            await list_api(data)
-
-            print(f"[{queue_name}] 任务完成: {data}")
-
-        except json.JSONDecodeError:
-            print(f"无效任务数据: {task}")
-        except Exception as e:
-            print(f"任务处理失败: {str(e)}")
-            # 增强的重试逻辑
-            try:
-                current_length = redis_client.llen(queue_name)
-                if current_length < 1000:
-                    # 使用管道保证原子性操作
-                    with redis_client.pipeline() as pipe:
-                        pipe.rpush(queue_name, task)
-                        pipe.execute()
-                    print(f"任务重新入队: {task}")
-            except Exception as pipe_error:
-                print(f"重试入队失败: {str(pipe_error)}")
 
 
 @app.exception(Exception)
@@ -182,29 +219,6 @@ async def handle_task(request: Request):
     })
 
 
-# 队列监控接口
-@app.route('/queues/status', methods=['GET'])
-async def queue_monitor(request: Request):
-    """队列状态查询（修复类型错误版）"""
-    status = {}
-    # 获取所有实际队列名称（展开列表型配置）
-    all_queues = []
-    for q in TASK_QUEUES.values():
-        all_queues.extend(q if isinstance(q, list) else [q])
-
-    # 为每个物理队列单独记录状态
-    for queue in set(all_queues):
-        # 安全处理二进制数据
-        oldest = redis_client.lindex(queue, 0)
-        newest = redis_client.lindex(queue, -1)
-
-        status[queue] = {
-            "pending_tasks": redis_client.llen(queue),
-            "oldest_task": oldest.decode('utf-8') if oldest else None,
-            "newest_task": newest.decode('utf-8') if newest else None
-        }
-
-    return json_sanic(status)
 
 
 
