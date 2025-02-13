@@ -129,44 +129,45 @@ async def pachong(db, brand, market, search_term):
                 # now = datetime.now()
                 # hour = now.hour
                 # minute = now.minute
-                # # 设置代理和其他启动选项
-                # if 7 <= hour < 10 :
-                #     browser = await pyppeteer.launch({
-                #         'headless': True,  # 启动无头浏览器
-                #         'args': [
-                #             '--no-sandbox',
-                #             '--disable-setuid-sandbox',
-                #             '--proxy-server=http://tunpool-pczn8.qg.net:17841',  # 设置代理
-                #         ]
-                #     })
-                #
-                #     # 创建新页面
-                #     page = await browser.newPage()
-                #     await page.authenticate({'username': '7D914026', 'password': '6DB40C477A3A'})
-                # else:
-                #     browser = await pyppeteer.launch({
-                #         'headless': True,  # 启动无头浏览器
-                #         'args': [
-                #             '--no-sandbox',
-                #             '--disable-setuid-sandbox',
-                #             '--proxy-server=http://192.168.2.165:7890'  # 设置代理
-                #         ]
-                #     })
-                #
-                #     # 创建新页面
-                #     page = await browser.newPage()
-                browser = await pyppeteer.launch({
-                    'headless': True,  # 启动无头浏览器
-                    'args': [
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--proxy-server=http://tunpool-pczn8.qg.net:17841',  # 设置代理
-                    ]
-                })
+                # 设置代理和其他启动选项
+                if market == 'JP' :
+                    browser = await pyppeteer.launch({
+                        'headless': True,  # 启动无头浏览器
+                        'args': [
+                            '--no-sandbox',
+                            '--disable-setuid-sandbox',
+                            '--proxy-server=http://192.168.2.165:7890'  # 设置代理
+                        ]
+                    })
 
-                # 创建新页面
-                page = await browser.newPage()
-                await page.authenticate({'username': '7D914026', 'password': '6DB40C477A3A'})
+                    # 创建新页面
+                    page = await browser.newPage()
+                else:
+
+                    browser = await pyppeteer.launch({
+                        'headless': True,  # 启动无头浏览器
+                        'args': [
+                            '--no-sandbox',
+                            '--disable-setuid-sandbox',
+                            '--proxy-server=http://tunpool-vqxo2.qg.net:16800',  # 设置代理
+                        ]
+                    })
+
+                    # 创建新页面
+                    page = await browser.newPage()
+                    await page.authenticate({'username': '5D71C84F', 'password': '00719FCDF909'})
+                # browser = await pyppeteer.launch({
+                #     'headless': True,  # 启动无头浏览器
+                #     'args': [
+                #         '--no-sandbox',
+                #         '--disable-setuid-sandbox',
+                #         '--proxy-server=http://tunpool-pczn8.qg.net:17841',  # 设置代理
+                #     ]
+                # })
+                #
+                # # 创建新页面
+                # page = await browser.newPage()
+                # await page.authenticate({'username': '7D914026', 'password': '6DB40C477A3A'})
                 # 访问目标网址
                 await page.goto(url)
                 # 获取页面内容
@@ -230,7 +231,7 @@ async def pachong(db, brand, market, search_term):
                     current_time = datetime.now()
                     # 打印当前时间（默认格式：年-月-日 时:分:秒.毫秒）
                     print(current_time)
-                    await asyncio.sleep(60 * 60)  # 等待10分钟
+                    await asyncio.sleep(60 * 1)  # 等待1分钟
                     consecutive_empty_count = 0  # 重置计数器
                 else:
                     print(f"当前数据量 0，重新获取数据...")
