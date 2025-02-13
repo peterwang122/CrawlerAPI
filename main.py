@@ -62,8 +62,11 @@ async def setup(app, _):
     for q in TASK_QUEUES.values():
         all_queues.extend(q if isinstance(q, list) else [q])
 
+    # 修改初始化逻辑：只启动有任务的队列
     for queue in set(all_queues):
-        app.add_task(task_processor(str(queue)))
+        queue = str(queue)
+        if redis_client.llen(queue) > 0:  # 检查队列是否有任务
+            app.add_task(task_processor(queue))
 
     app.config.REQUEST_TIMEOUT = 1800
     app.config.RESPONSE_TIMEOUT = 1800
@@ -202,37 +205,15 @@ async def handle_task(request: Request):
             return json_sanic({"error": "高优先级任务必须包含market参数"}, status=400)
         target_queue = determine_queue(data["market"])
     else:
-        target_queue = TASK_QUEUES[task_type]
+        target_queue = TASK_QUEUES[task_type][0] if isinstance(TASK_QUEUES[task_type], list) else TASK_QUEUES[task_type]
 
     # 检查重复任务
     task_json = json.dumps(data)
-    duplicate = False
+    check_queues = [str(q) for q in
+                    (TASK_QUEUES[task_type] if isinstance(TASK_QUEUES[task_type], list) else [TASK_QUEUES[task_type]])]
 
-    # 修复队列名称处理逻辑
-    if task_type == "SearchtermCrawlerAsin":
-        if not data.get("market"):
-            return json_sanic({"error": "高优先级任务必须包含market参数"}, status=400)
-        target_queue = determine_queue(data["market"])
-    else:
-        # 确保获取字符串类型的队列名称
-        target_queue = TASK_QUEUES[task_type][0] if isinstance(TASK_QUEUES[task_type], list) else TASK_QUEUES[task_type]
-
-    # 修复检查队列逻辑
-    check_queues = []
-    for queue in TASK_QUEUES[task_type]:
-        if isinstance(queue, list):
-            check_queues.extend([str(q) for q in queue])
-        else:
-            check_queues.append(str(queue))
-
-    # 添加类型安全检查
-    check_queues = [str(q) for q in check_queues]
-
-    # 修复后的重复检查
     for q in check_queues:
         try:
-            # 确保队列名称是字符串
-            q = str(q)
             existing_tasks = redis_client.lrange(q, 0, -1)
             if any(task.decode('utf-8') == task_json for task in existing_tasks):
                 return json_sanic({
@@ -244,9 +225,13 @@ async def handle_task(request: Request):
             print(f"队列检查错误: {str(e)}")
             continue
 
-    # 提交任务时强制转换类型
+    # 提交任务并动态扩展处理线程
     try:
         redis_client.rpush(str(target_queue), task_json)
+        # 新增动态扩展逻辑：当队列从空变为有任务时启动处理器
+        current_length = redis_client.llen(str(target_queue))
+        if current_length == 1:
+            app.add_task(task_processor(str(target_queue)))
     except redis.exceptions.DataError as e:
         return json_sanic({
             "error": f"任务提交失败: {str(e)}",
@@ -259,7 +244,6 @@ async def handle_task(request: Request):
         "queue": target_queue,
         "position": redis_client.llen(str(target_queue))
     })
-
 
 # 队列监控接口
 @app.route('/queues/status', methods=['GET'])
