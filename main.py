@@ -1,5 +1,6 @@
 import asyncio
 import os
+import traceback
 from datetime import datetime
 
 from sanic import Sanic
@@ -164,6 +165,8 @@ async def global_exception_handler(request, exception):
     """全局异常处理"""
     error_msg = f"请求 {request.url} 出错: {str(exception)}"
     print(error_msg)
+    error_trace = traceback.format_exc()
+    print(error_trace)
     return json_sanic({"error": error_msg}, status=500)
 
 
@@ -202,7 +205,7 @@ async def handle_task(request: Request):
         target_queue = TASK_QUEUES[task_type]
 
     # 检查重复任务
-    task_json = json.dumps(data, sort_keys=True)
+    task_json = json.dumps(data)
     duplicate = False
 
     # 根据任务类型决定检查范围
