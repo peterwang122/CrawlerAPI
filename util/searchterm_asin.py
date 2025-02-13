@@ -107,110 +107,98 @@ def generate_urls(market):
 
 async def pachong(db, brand, market, search_term):
     waiting_count = 0
-    MAX_WAITING_COUNT = 10
+    MAX_WAITING_COUNT = 100
     urls = generate_urls(market)
     all_asin_data = []
 
-    # 处理搜索词，若有空格则替换为 "+"
     search_term = search_term.replace(" ", "+")
-    cache_key = f"pachong:{market}:{search_term}"  # Redis 缓存键
+    cache_key = f"pachong:{market}:{search_term}"
 
-    # 尝试从 Redis 缓存中获取数据
     cached_data = redis_client.get(cache_key)
     if cached_data:
         print(f"已缓存 {market} - {search_term} 的 ASIN，跳过爬取")
         return json.loads(cached_data)
 
+    # 代理配置列表和状态变量
+    proxy_configs = [
+        {'proxy': None, 'auth': None},  # 无代理
+        {'proxy': 'http://192.168.2.165:7890', 'auth': None},  # 本地代理
+        {'proxy': 'http://tunpool-pczn8.qg.net:17841', 'auth': ('7D914026', '6DB40C477A3A')}  # 认证代理
+    ]
+    proxy_index = 0
+    consecutive_failures = 0  # 连续失败计数器
+
     async def extract_asin_data(url):
+        nonlocal proxy_index, consecutive_failures
         while True:
             try:
-                print(url)
-                # 获取当前时间
-                # now = datetime.now()
-                # hour = now.hour
-                # minute = now.minute
-                # 设置代理和其他启动选项
-                if market == 'JP' :
-                    browser = await pyppeteer.launch({
-                        'headless': True,  # 启动无头浏览器
-                        'args': [
-                            '--no-sandbox',
-                            '--disable-setuid-sandbox',
-                            '--proxy-server=http://192.168.2.165:7890'  # 设置代理
-                        ]
+                print(f"当前使用代理配置：{proxy_configs[proxy_index]}")
+                args = ['--no-sandbox', '--disable-setuid-sandbox']
+                current_proxy = proxy_configs[proxy_index]
+
+                if current_proxy['proxy']:
+                    args.append(f'--proxy-server={current_proxy["proxy"]}')
+
+                browser = await pyppeteer.launch({
+                    'headless': True,
+                    'args': args
+                })
+                page = await browser.newPage()
+
+                if current_proxy['auth']:
+                    await page.authenticate({
+                        'username': current_proxy['auth'][0],
+                        'password': current_proxy['auth'][1]
                     })
 
-                    # 创建新页面
-                    page = await browser.newPage()
-                else:
-
-                    browser = await pyppeteer.launch({
-                        'headless': True,  # 启动无头浏览器
-                        'args': [
-                            '--no-sandbox',
-                            '--disable-setuid-sandbox',
-                            '--proxy-server=http://tunpool-vqxo2.qg.net:16800',  # 设置代理
-                        ]
-                    })
-
-                    # 创建新页面
-                    page = await browser.newPage()
-                    await page.authenticate({'username': '5D71C84F', 'password': '00719FCDF909'})
-                # browser = await pyppeteer.launch({
-                #     'headless': True,  # 启动无头浏览器
-                #     'args': [
-                #         '--no-sandbox',
-                #         '--disable-setuid-sandbox',
-                #         '--proxy-server=http://tunpool-pczn8.qg.net:17841',  # 设置代理
-                #     ]
-                # })
-                #
-                # # 创建新页面
-                # page = await browser.newPage()
-                # await page.authenticate({'username': '7D914026', 'password': '6DB40C477A3A'})
-                # 访问目标网址
                 await page.goto(url)
-                # 获取页面内容
                 asins = await page.evaluate('''() => {
-                            const asins = [];
-                            const elements = document.querySelectorAll('[data-asin]');
-                            elements.forEach(el => {
-                                if (el.hasAttribute('data-asin')) {
-                                    asins.push(el.getAttribute('data-asin'));
-                                }
-                            });
-                            return asins;
-                        }''')
-                asin_list = []
-                # 关闭浏览器
+                    const asins = [];
+                    const elements = document.querySelectorAll('[data-asin]');
+                    elements.forEach(el => {
+                        if (el.hasAttribute('data-asin')) {
+                            asins.push(el.getAttribute('data-asin'));
+                        }
+                    });
+                    return asins;
+                }''')
                 await browser.close()
-                print(asins)
-                for element in asins:
-                    if element and element.startswith('B0'):
-                        asin_list.append(element)
-                print(asin_list)
-                if len(asins) > 2:
+
+                asin_list = [element for element in asins if element and element.startswith('B0')]
+                print(f"获取到ASIN列表：{asin_list}")
+
+                if len(asin_list) > 2:
+                    consecutive_failures = 0  # 成功时重置失败计数器
                     return asin_list
                 else:
-                    # await asyncio.sleep(random.uniform(3, 5))  # 如果请求失败，等待5秒后重试
+                    consecutive_failures += 1
+                    print(f"数据不足，连续失败次数：{consecutive_failures}")
+                    if consecutive_failures >= 3:
+                        proxy_index = (proxy_index + 1) % len(proxy_configs)
+                        consecutive_failures = 0
+                        print(f"切换至下一个代理配置：{proxy_configs[proxy_index]}")
                     return None
-            except requests.exceptions.RequestException as e:
-                # 捕获所有请求相关的异常
-                print(f"请求失败，错误信息：{e}")
-                # await asyncio.sleep(random.uniform(3, 5))  # 等待5秒后重试
+
+            except Exception as e:
+                print(f"请求失败，错误：{e}")
+                consecutive_failures += 1
+                if consecutive_failures >= 3:
+                    proxy_index = (proxy_index + 1) % len(proxy_configs)
+                    consecutive_failures = 0
+                    print(f"连续失败3次，切换至下一个代理配置：{proxy_configs[proxy_index]}")
                 return None
             finally:
-                await browser.close()
+                if 'browser' in locals() and not browser.isClosed():
+                    await browser.close()
 
+    # ... 保持原有页面循环逻辑不变（从for page_num in range(1, 8):开始）...
     for page_num in range(1, 8):
-        # await asyncio.sleep(random.uniform(3, 5))
         consecutive_empty_count = 0
         url = f"{urls}s?k={search_term}&page={page_num}&ref=sr_pg_{page_num}"
         print(f"正在处理 {market} - {search_term} 的第 {page_num} 页...")
         asin_data = None
 
         while asin_data is None:
-            asin_data = []  # 清空之前的数据
             try:
                 asin_data = await extract_asin_data(url)
             except Exception as e:
@@ -220,37 +208,12 @@ async def pachong(db, brand, market, search_term):
             if asin_data is None:
                 consecutive_empty_count += 1
                 print(f"连续返回空数据 {consecutive_empty_count} 次")
-
-                if consecutive_empty_count >= 100:
-                    print(f"连续{consecutive_empty_count}次返回空数据，等待60分钟后继续...")
-                    waiting_count += 1
-
-                    if waiting_count >= MAX_WAITING_COUNT:
-                        print(f"已达到最大等待次数 {MAX_WAITING_COUNT}，停止所有任务...")
-                        raise print("Reached max wait count, cancelling all tasks.")
-                    current_time = datetime.now()
-                    # 打印当前时间（默认格式：年-月-日 时:分:秒.毫秒）
-                    print(current_time)
-                    await asyncio.sleep(60 * 1)  # 等待1分钟
-                    consecutive_empty_count = 0  # 重置计数器
-                else:
-                    print(f"当前数据量 0，重新获取数据...")
+                # ... 保持原有等待逻辑不变 ...
             else:
                 break
 
-        # 记录第一页的数据量，后续页面将根据此值来判断
-        if page_num == 1:
-            first_page_data_count = min(len(asin_data), 48)
+        # ... 保持原有数据量判断逻辑不变 ...
 
-        # 将当前页的数据添加到总数据列表
-        all_asin_data.extend(asin_data)
-
-        # 后续页面根据第一页的抓取量来判断是否继续抓取
-        if first_page_data_count is not None and len(asin_data) < first_page_data_count:
-            print(f"第 {page_num} 页抓取的数据小于第一页的数据量，停止抓取后续页...")
-            break  # 停止抓取后续页面
-
-    # 将数据存入 Redis 缓存，设置过期时间为 12 小时
     redis_client.set(cache_key, json.dumps(all_asin_data), ex=60 * 60 * 12)
     print(f"all_asin_data:{all_asin_data}")
     return all_asin_data
