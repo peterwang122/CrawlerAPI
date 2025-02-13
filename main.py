@@ -53,56 +53,89 @@ def verify_request(token, timestamp, secret_key):
 
 @app.before_server_start
 async def setup(app, _):
-    app.ctx.running = True
+    """服务启动初始化"""
+    app.ctx.running = asyncio.Event()
+    app.ctx.running.set()
+
     all_queues = []
     for q in TASK_QUEUES.values():
-        if isinstance(q, list):
-            all_queues.extend([str(queue) for queue in q])
-        else:
-            all_queues.append(str(q))
+        all_queues.extend(q if isinstance(q, list) else [q])
 
     for queue in set(all_queues):
-        app.add_task(task_processor(queue))
+        app.add_task(task_processor(str(queue)))
 
     app.config.REQUEST_TIMEOUT = 1800
     app.config.RESPONSE_TIMEOUT = 1800
 
+
 @app.before_server_stop
 async def teardown(app, _):
-    app.ctx.running = False
-    await asyncio.sleep(1)
+    """服务停止处理"""
+    app.ctx.running.clear()
+
+    # 取消所有任务
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    for task in tasks:
+        task.cancel()
+
+    # 等待任务完成（最多3秒）
+    await asyncio.wait_for(
+        asyncio.gather(*tasks, return_exceptions=True),
+        timeout=3
+    )
+
 
 async def task_processor(queue_name: str):
-    while app.ctx.running:
-        try:
-            queue_name = str(queue_name)
-            task = redis_client.lpop(queue_name)
-            if not task:
-                await asyncio.sleep(0.5)
-                continue
-
-            data = json.loads(task)
-            print(f"[{queue_name}] 开始处理任务: {data}")
-
-            await list_api(data)
-            print(f"[{queue_name}] 任务完成: {data}")
-
-        except json.JSONDecodeError:
-            print(f"无效任务数据: {task}")
-        except Exception as e:
-            print(f"任务处理失败: {str(e)}")
+    """增强版任务处理器"""
+    print(f"启动队列处理器: {queue_name}")
+    try:
+        while app.ctx.running.is_set():
             try:
-                current_length = redis_client.llen(queue_name)
-                if current_length < 1000:
-                    with redis_client.pipeline() as pipe:
-                        pipe.rpush(queue_name, task)
-                        pipe.execute()
-                    print(f"任务重新入队: {task}")
-            except Exception as pipe_error:
-                print(f"重试入队失败: {str(pipe_error)}")
-        finally:
-            await asyncio.sleep(0.5)
-    print(f"队列处理器 {queue_name} 已安全退出")
+                # 异步阻塞获取任务
+                task = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: redis_client.brpop(queue_name, timeout=1)
+                )
+
+                if not task:
+                    await asyncio.sleep(0.1)
+                    continue
+
+                _, task_data = task
+                data = json.loads(task_data)
+                print(f"[{queue_name}] 开始处理任务: {data}")
+
+                await list_api(data)
+                print(f"[{queue_name}] 任务完成: {data}")
+
+            except (json.JSONDecodeError, TypeError) as e:
+                print(f"无效任务数据: {task_data}")
+            except asyncio.CancelledError:
+                raise
+            except Exception as e:
+                print(f"任务处理失败: {str(e)}")
+                await handle_retry(queue_name, task_data)
+            finally:
+                await asyncio.sleep(0.1)
+    except asyncio.CancelledError:
+        print(f"队列处理器 {queue_name} 收到关闭信号")
+    finally:
+        print(f"队列处理器 {queue_name} 已安全退出")
+
+
+async def handle_retry(queue_name, task_data):
+    """增强的重试逻辑"""
+    try:
+        current_length = await asyncio.get_event_loop().run_in_executor(
+            None, redis_client.llen, queue_name
+        )
+        if current_length < 1000:
+            await asyncio.get_event_loop().run_in_executor(
+                None, lambda: redis_client.rpush(queue_name, task_data)
+            )
+            print(f"任务重新入队: {task_data.decode()}")
+    except Exception as e:
+        print(f"重试入队失败: {str(e)}")
 
 
 @app.exception(Exception)
