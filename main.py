@@ -25,7 +25,7 @@ redis_client = redis.Redis(db=12,**REDIS_CONFIG)
 # 定义双队列映射
 TASK_QUEUES = {
     "SearchtermCrawlerAsin": ["high_priority_queue_NA", "high_priority_queue_EU", "high_priority_queue_FE"],
-    "CrawlerAsin": "low_priority_queue"
+    "CrawlerAsin": ["low_priority_queue"]  # 修改为列表格式
 }
 
 
@@ -53,23 +53,19 @@ def verify_request(token, timestamp, secret_key):
 
 @app.before_server_start
 async def setup(app, _):
-    """服务启动初始化（完整修复版）"""
-    # 展开所有队列配置（处理列表和字符串类型）
+    """服务启动初始化（修复队列初始化问题）"""
+    # 统一处理队列配置（全部转为列表）
     all_queues = []
     for q in TASK_QUEUES.values():
-        if isinstance(q, list):
-            all_queues.extend([str(queue) for queue in q])
-        else:
-            all_queues.append(str(q))
+        all_queues.extend(q if isinstance(q, list) else [q])  # 统一处理为列表
+
+    # 添加队列初始化验证
+    print(f"正在监听的队列列表: {all_queues}")
 
     # 为每个物理队列启动独立消费者
-    for queue in set(all_queues):  # 去重确保唯一性
+    for queue in set(all_queues):
         app.add_task(task_processor(queue))
-
-    # 超时设置保持不变
-    app.config.REQUEST_TIMEOUT = 1800
-    app.config.RESPONSE_TIMEOUT = 1800
-
+        print(f"已启动队列处理器: {queue}")  # 添加队列启动日志
 
 async def task_processor(queue_name: str):
     """通用任务处理器（完整修复版）"""
@@ -189,15 +185,25 @@ async def handle_task(request: Request):
 # 队列监控接口
 @app.route('/queues/status', methods=['GET'])
 async def queue_monitor(request: Request):
-    """队列状态查询"""
+    """队列状态查询（修复类型错误版）"""
     status = {}
-    for ttype, qname in TASK_QUEUES.items():
-        status[ttype] = {
-            "queue_name": qname,
-            "pending_tasks": redis_client.llen(qname),
-            "oldest_task": redis_client.lindex(qname, 0),
-            "newest_task": redis_client.lindex(qname, -1)
+    # 获取所有实际队列名称（展开列表型配置）
+    all_queues = []
+    for q in TASK_QUEUES.values():
+        all_queues.extend(q if isinstance(q, list) else [q])
+
+    # 为每个物理队列单独记录状态
+    for queue in set(all_queues):
+        # 安全处理二进制数据
+        oldest = redis_client.lindex(queue, 0)
+        newest = redis_client.lindex(queue, -1)
+
+        status[queue] = {
+            "pending_tasks": redis_client.llen(queue),
+            "oldest_task": oldest.decode('utf-8') if oldest else None,
+            "newest_task": newest.decode('utf-8') if newest else None
         }
+
     return json_sanic(status)
 
 
