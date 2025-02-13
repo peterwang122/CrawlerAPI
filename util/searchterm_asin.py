@@ -126,35 +126,47 @@ async def pachong(db, brand, market, search_term):
             try:
                 print(url)
                 # 获取当前时间
-                now = datetime.now()
-                hour = now.hour
-                minute = now.minute
-                # 设置代理和其他启动选项
-                if 7 <= hour < 10 :
-                    browser = await pyppeteer.launch({
-                        'headless': True,  # 启动无头浏览器
-                        'args': [
-                            '--no-sandbox',
-                            '--disable-setuid-sandbox',
-                            '--proxy-server=http://tun-xqcbgv.qg.net:10775',  # 设置代理
-                        ]
-                    })
+                # now = datetime.now()
+                # hour = now.hour
+                # minute = now.minute
+                # # 设置代理和其他启动选项
+                # if 7 <= hour < 10 :
+                #     browser = await pyppeteer.launch({
+                #         'headless': True,  # 启动无头浏览器
+                #         'args': [
+                #             '--no-sandbox',
+                #             '--disable-setuid-sandbox',
+                #             '--proxy-server=http://tunpool-pczn8.qg.net:17841',  # 设置代理
+                #         ]
+                #     })
+                #
+                #     # 创建新页面
+                #     page = await browser.newPage()
+                #     await page.authenticate({'username': '7D914026', 'password': '6DB40C477A3A'})
+                # else:
+                #     browser = await pyppeteer.launch({
+                #         'headless': True,  # 启动无头浏览器
+                #         'args': [
+                #             '--no-sandbox',
+                #             '--disable-setuid-sandbox',
+                #             '--proxy-server=http://192.168.2.165:7890'  # 设置代理
+                #         ]
+                #     })
+                #
+                #     # 创建新页面
+                #     page = await browser.newPage()
+                browser = await pyppeteer.launch({
+                    'headless': True,  # 启动无头浏览器
+                    'args': [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--proxy-server=http://tunpool-pczn8.qg.net:17841',  # 设置代理
+                    ]
+                })
 
-                    # 创建新页面
-                    page = await browser.newPage()
-                    await page.authenticate({'username': 'D9862169', 'password': '65AC0C17C145'})
-                else:
-                    browser = await pyppeteer.launch({
-                        'headless': True,  # 启动无头浏览器
-                        'args': [
-                            '--no-sandbox',
-                            '--disable-setuid-sandbox',
-                            '--proxy-server=http://192.168.2.165:7890'  # 设置代理
-                        ]
-                    })
-
-                    # 创建新页面
-                    page = await browser.newPage()
+                # 创建新页面
+                page = await browser.newPage()
+                await page.authenticate({'username': '7D914026', 'password': '6DB40C477A3A'})
                 # 访问目标网址
                 await page.goto(url)
                 # 获取页面内容
@@ -207,8 +219,8 @@ async def pachong(db, brand, market, search_term):
                 consecutive_empty_count += 1
                 print(f"连续返回空数据 {consecutive_empty_count} 次")
 
-                if consecutive_empty_count >= 3:
-                    print("连续3次返回空数据，等待60分钟后继续...")
+                if consecutive_empty_count >= 100:
+                    print(f"连续{consecutive_empty_count}次返回空数据，等待60分钟后继续...")
                     waiting_count += 1
 
                     if waiting_count >= MAX_WAITING_COUNT:
@@ -338,5 +350,5 @@ async def searchterm_asin(db,brand,market,day,order,num):
 
 
 if __name__ == "__main__":
-    asyncio.run(searchterm_asin('amazon_68_LILLEPRINS','LILLEPRINS','US',60,1,1000))
+    asyncio.run(searchterm_asin('amazon_191_crystalworld','Fellowes','US',60,1,1000))
 
