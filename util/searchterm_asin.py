@@ -297,6 +297,19 @@ async def pachong(db, brand, market, search_term):
 
                 # 创建新页面
                 page = await browser.newPage()
+            elif market == 'US':
+                browser = await pyppeteer.launch({
+                    'headless': True,  # 启动无头浏览器
+                    'args': [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--proxy-server=http://tun-egkddi.qg.net:11416',  # 设置代理
+                    ]
+                })
+
+                # 创建新页面
+                page = await browser.newPage()
+                await page.authenticate({'username': 'B1191EFA', 'password': '397B38B8CD6F'})
             else:
                 print(f"当前使用代理配置：{proxy_configs[proxy_index]}")
                 args = [
