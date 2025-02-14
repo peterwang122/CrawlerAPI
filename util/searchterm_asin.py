@@ -274,7 +274,7 @@ async def pachong(db, brand, market, search_term):
     proxy_configs = [
         {'proxy': None, 'auth': None},
         {'proxy': 'http://192.168.2.165:7890', 'auth': None},
-        {'proxy': 'http://tunpool-pczn8.qg.net:17841', 'auth': ('7D914026', '6DB40C477A3A')}
+        {'proxy': 'tun-egkddi.qg.net:11416', 'auth': ('B1191EFA', '397B38B8CD6F')}
     ]
     proxy_index = 0
     consecutive_failures = 0
