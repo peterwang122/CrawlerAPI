@@ -58,18 +58,92 @@ async def setup(app, _):
     app.ctx.running = asyncio.Event()
     app.ctx.running.set()
 
+    # 初始化任务处理器跟踪
+    app.ctx.processing_tasks = {}
+    app.ctx.processing_lock = asyncio.Lock()
+
+    # 只启动有任务的队列处理器
     all_queues = []
     for q in TASK_QUEUES.values():
         all_queues.extend(q if isinstance(q, list) else [q])
 
-    # 修改初始化逻辑：只启动有任务的队列
     for queue in set(all_queues):
         queue = str(queue)
-        if redis_client.llen(queue) > 0:  # 检查队列是否有任务
-            app.add_task(task_processor(queue))
+        if redis_client.llen(queue) > 0:
+            app.add_task(start_processor(queue))
 
     app.config.REQUEST_TIMEOUT = 1800
     app.config.RESPONSE_TIMEOUT = 1800
+
+
+async def start_processor(queue_name: str):
+    """启动任务处理器并跟踪状态"""
+    async with app.ctx.processing_lock:
+        if queue_name in app.ctx.processing_tasks:
+            return
+
+        processor = app.add_task(task_processor(queue_name))
+        app.ctx.processing_tasks[queue_name] = processor
+        print(f"启动 {queue_name} 的任务处理器")
+
+
+async def task_processor(queue_name: str):
+    """动态任务处理器"""
+    processing_queue = f"{queue_name}:processing"
+    try:
+        while app.ctx.running.is_set():
+            try:
+                task_data = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: redis_client.rpoplpush(queue_name, processing_queue)
+                )
+
+                if not task_data:
+                    await asyncio.sleep(0.5)
+                    continue
+
+                data = json.loads(task_data)
+                print(f"[{queue_name}] 开始处理任务: {data}")
+
+                await list_api(data)
+
+                await asyncio.get_event_loop().run_in_executor(
+                    None, redis_client.lrem, processing_queue, 1, task_data
+                )
+                print(f"[{queue_name}] 任务完成: {data}")
+
+            except Exception as e:
+                print(f"任务处理失败: {str(e)}")
+                await asyncio.get_event_loop().run_in_executor(
+                    None, lambda: redis_client.rpush(queue_name, task_data)
+                )
+                await asyncio.get_event_loop().run_in_executor(
+                    None, redis_client.lrem, processing_queue, 1, task_data
+                )
+            finally:
+                # 检查队列是否为空
+                current_count = redis_client.llen(queue_name)
+                if current_count == 0:
+                    print(f"{queue_name} 队列已空，停止处理")
+                    break
+                await asyncio.sleep(0.1)
+
+    except asyncio.CancelledError:
+        processing_tasks = await asyncio.get_event_loop().run_in_executor(
+            None, redis_client.lrange, processing_queue, 0, -1
+        )
+        for task in processing_tasks:
+            await asyncio.get_event_loop().run_in_executor(
+                None, lambda: redis_client.rpush(queue_name, task)
+            )
+        await asyncio.get_event_loop().run_in_executor(
+            None, redis_client.delete, processing_queue
+        )
+        print(f"已恢复{len(processing_tasks)}个未完成任务到{queue_name}")
+    finally:
+        async with app.ctx.processing_lock:
+            if queue_name in app.ctx.processing_tasks:
+                del app.ctx.processing_tasks[queue_name]
 
 
 @app.before_server_stop
@@ -92,60 +166,6 @@ async def teardown(app, _):
         print("部分任务未能在超时时间内完成")
     finally:
         await asyncio.sleep(1)  # 确保所有资源释放
-
-
-async def task_processor(queue_name: str):
-    """安全版任务处理器（保留原始任务）"""
-    processing_queue = f"{queue_name}:processing"  # 新增处理中队列
-    try:
-        while app.ctx.running.is_set():
-            try:
-                # 使用RPOPLPUSH保证任务安全
-                task_data = await asyncio.get_event_loop().run_in_executor(
-                    None,
-                    lambda: redis_client.rpoplpush(queue_name, processing_queue)
-                )
-
-                if not task_data:
-                    await asyncio.sleep(0.5)
-                    continue
-
-                data = json.loads(task_data)
-                print(f"[{queue_name}] 开始处理任务: {data}")
-
-                await list_api(data)
-
-                # 处理成功后移除处理中队列的任务
-                await asyncio.get_event_loop().run_in_executor(
-                    None, redis_client.lrem, processing_queue, 1, task_data
-                )
-                print(f"[{queue_name}] 任务完成: {data}")
-
-            except Exception as e:
-                print(f"任务处理失败: {str(e)}")
-                # 将任务移回主队列
-                await asyncio.get_event_loop().run_in_executor(
-                    None, lambda: redis_client.rpush(queue_name, task_data)
-                )
-                # 从处理中队列移除
-                await asyncio.get_event_loop().run_in_executor(
-                    None, redis_client.lrem, processing_queue, 1, task_data
-                )
-            finally:
-                await asyncio.sleep(0.1)
-    except asyncio.CancelledError:
-        # 服务关闭时将处理中队列的任务移回主队列
-        processing_tasks = await asyncio.get_event_loop().run_in_executor(
-            None, redis_client.lrange, processing_queue, 0, -1
-        )
-        for task in processing_tasks:
-            await asyncio.get_event_loop().run_in_executor(
-                None, lambda: redis_client.rpush(queue_name, task)
-            )
-        await asyncio.get_event_loop().run_in_executor(
-            None, redis_client.delete, processing_queue
-        )
-        print(f"已恢复{len(processing_tasks)}个未完成任务到{queue_name}")
 
 
 async def handle_retry(queue_name, task_data):
@@ -225,13 +245,15 @@ async def handle_task(request: Request):
             print(f"队列检查错误: {str(e)}")
             continue
 
-    # 提交任务并动态扩展处理线程
     try:
-        redis_client.rpush(str(target_queue), task_json)
-        # 新增动态扩展逻辑：当队列从空变为有任务时启动处理器
-        current_length = redis_client.llen(str(target_queue))
-        if current_length == 1:
-            app.add_task(task_processor(str(target_queue)))
+        target_queue = str(target_queue)
+        redis_client.rpush(target_queue, task_json)
+
+        # 提交后检查是否需要启动处理器
+        async with app.ctx.processing_lock:
+            if target_queue not in app.ctx.processing_tasks:
+                app.add_task(start_processor(target_queue))
+
     except redis.exceptions.DataError as e:
         return json_sanic({
             "error": f"任务提交失败: {str(e)}",
@@ -242,7 +264,7 @@ async def handle_task(request: Request):
         "status": 200,
         "info": "任务提交成功",
         "queue": target_queue,
-        "position": redis_client.llen(str(target_queue))
+        "position": redis_client.llen(target_queue)
     })
 
 # 队列监控接口
