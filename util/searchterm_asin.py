@@ -96,7 +96,8 @@ def generate_urls(market):
     "BE": "https://www.amazon.com.be/",
     "NL": "https://www.amazon.nl/",
     "PL": "https://www.amazon.pl/",
-    "SE": "https://www.amazon.se/"
+    "SE": "https://www.amazon.se/",
+    "IN": "https://www.amazon.in/"
 }
     base_url = url_templates.get(market.upper())
     if not base_url:
@@ -274,7 +275,7 @@ async def pachong(db, brand, market, search_term):
     proxy_configs = [
         {'proxy': None, 'auth': None},
         {'proxy': 'http://192.168.2.165:7890', 'auth': None},
-        {'proxy': 'tun-egkddi.qg.net:11416', 'auth': ('B1191EFA', '397B38B8CD6F')}
+        {'proxy': 'tunpool-pczn8.qg.net:17841', 'auth': ('7D914026', '6DB40C477A3A')}
     ]
     proxy_index = 0
     consecutive_failures = 0
@@ -297,19 +298,6 @@ async def pachong(db, brand, market, search_term):
 
                 # 创建新页面
                 page = await browser.newPage()
-            elif market == 'US':
-                browser = await pyppeteer.launch({
-                    'headless': True,  # 启动无头浏览器
-                    'args': [
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--proxy-server=http://tun-egkddi.qg.net:11416',  # 设置代理
-                    ]
-                })
-
-                # 创建新页面
-                page = await browser.newPage()
-                await page.authenticate({'username': 'B1191EFA', 'password': '397B38B8CD6F'})
             else:
                 print(f"当前使用代理配置：{proxy_configs[proxy_index]}")
                 args = [
