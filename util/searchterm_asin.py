@@ -205,6 +205,63 @@ async def pachong(db, brand, market, search_term):
                         consecutive_failures = 0
                         print(f"连续失败3次，切换至下一个代理配置：{proxy_configs[proxy_index]}")
                     return None
+            elif current_proxy['proxy'] == 'tunpool-pczn8.qg.net:17841':
+                print(f"使用异步Playwright访问：{current_proxy}")
+                browser = None
+                try:
+                    async with async_playwright() as p:
+                        # 启动浏览器并设置代理
+                        browser = await p.webkit.launch(
+                            headless=True,
+                            proxy={
+                                "server": current_proxy['proxy'],
+                                "username": current_proxy['auth'][0] if current_proxy['auth'] else None,
+                                "password": current_proxy['auth'][1] if current_proxy['auth'] else None
+                            } if current_proxy['proxy'] else None
+                        )
+
+                        # 创建新页面
+                        context = await browser.new_context()
+                        page = await context.new_page()
+
+                        # 导航到页面
+                        response = await page.goto(url, timeout=60000)
+                        if not response or response.status != 200:
+                            raise Exception(f"请求失败，状态码：{response.status if response else '无响应'}")
+
+                        # 异步执行JavaScript获取ASIN
+                        asins = await page.evaluate('''() => {
+                                        return Array.from(document.querySelectorAll('[data-asin]'))
+                                            .map(el => el.getAttribute('data-asin'))
+                                            .filter(asin => asin && asin.startsWith('B0'));
+                                    }''')
+
+                        # 关闭资源
+                        await context.close()
+                        await browser.close()
+
+                        if len(asins) > 2:
+                            consecutive_failures = 0
+                            return asins
+                        else:
+                            consecutive_failures += 1
+                            print(f"数据不足，连续失败次数：{consecutive_failures}")
+                            if consecutive_failures >= 3:
+                                proxy_index = (proxy_index + 1) % len(proxy_configs)
+                                consecutive_failures = 0
+                                print(f"切换至下一个代理配置：{proxy_configs[proxy_index]}")
+                            return None
+
+                except Exception as e:
+                    print(f"异步爬取失败：{str(e)[:200]}")
+                    if browser:
+                        await browser.close()
+                    consecutive_failures += 1
+                    if consecutive_failures >= 3:
+                        proxy_index = (proxy_index + 1) % len(proxy_configs)
+                        consecutive_failures = 0
+                        print(f"连续失败3次，切换至下一个代理配置：{proxy_configs[proxy_index]}")
+                    return None
             else:
                 print(f"当前使用代理配置：{proxy_configs[proxy_index]}")
                 args = [
