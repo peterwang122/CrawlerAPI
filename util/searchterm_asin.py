@@ -15,10 +15,11 @@ import json
 import csv
 import time
 import redis
+from playwright.async_api import async_playwright
+
 from config import REDIS_CONFIG
 from db.tools_db_new_sp import DbNewSpTools
 from db.tools_db_sp import DbSpTools
-from playwright.sync_api import sync_playwright
 from configuration.path import get_config_path
 
 redis_client = redis.Redis(db=12,**REDIS_CONFIG)
@@ -148,14 +149,13 @@ async def pachong(db, brand, market, search_term):
                 # 创建新页面
                 page = await browser.newPage()
             elif current_proxy['proxy'] == 'http://192.168.2.165:7890':
-                print(f"使用同步方法访问：{current_proxy}")
+                print(f"使用异步Playwright访问：{current_proxy}")
+                browser = None
                 try:
-                    with sync_playwright() as p:
-                        browser = p.firefox.launch(headless=True)
-                        page = browser.new_page()
-
-                        # 设置代理
-                        context = browser.new_context(
+                    async with async_playwright() as p:
+                        # 启动浏览器并设置代理
+                        browser = await p.firefox.launch(
+                            headless=True,
                             proxy={
                                 "server": current_proxy['proxy'],
                                 "username": current_proxy['auth'][0] if current_proxy['auth'] else None,
@@ -163,20 +163,25 @@ async def pachong(db, brand, market, search_term):
                             } if current_proxy['proxy'] else None
                         )
 
-                        page = context.new_page()
-                        response = page.goto(url)
+                        # 创建新页面
+                        context = await browser.new_context()
+                        page = await context.new_page()
 
-                        if response.status != 200:
-                            raise Exception(f"请求失败，状态码：{response.status}")
+                        # 导航到页面
+                        response = await page.goto(url, timeout=60000)
+                        if not response or response.status != 200:
+                            raise Exception(f"请求失败，状态码：{response.status if response else '无响应'}")
 
-                        # 提取ASIN
+                        # 异步执行JavaScript获取ASIN
                         asins = await page.evaluate('''() => {
-                                    return Array.from(document.querySelectorAll('[data-asin]'))
-                                        .map(el => el.getAttribute('data-asin'))
-                                        .filter(asin => asin && asin.startsWith('B0'));
-                                }''')
+                                        return Array.from(document.querySelectorAll('[data-asin]'))
+                                            .map(el => el.getAttribute('data-asin'))
+                                            .filter(asin => asin && asin.startsWith('B0'));
+                                    }''')
 
-                        browser.close()
+                        # 关闭资源
+                        await context.close()
+                        await browser.close()
 
                         if len(asins) > 2:
                             consecutive_failures = 0
@@ -191,7 +196,9 @@ async def pachong(db, brand, market, search_term):
                             return None
 
                 except Exception as e:
-                    print(f"同步爬取失败：{str(e)[:200]}")
+                    print(f"异步爬取失败：{str(e)[:200]}")
+                    if browser:
+                        await browser.close()
                     consecutive_failures += 1
                     if consecutive_failures >= 3:
                         proxy_index = (proxy_index + 1) % len(proxy_configs)
