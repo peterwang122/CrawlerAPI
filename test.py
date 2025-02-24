@@ -3,7 +3,7 @@ import time
 from playwright.sync_api import sync_playwright
 def get_html_content(url):
     with sync_playwright() as p:
-        browser = p.firefox.launch(headless=True)  # 使用 Firefox（或 p.chromium / p.webkit）
+        browser = p.firefox.launch( proxy={"server": "http://192.168.1.191:808"},headless=True)  # 使用 Firefox（或 p.chromium / p.webkit）
         page = browser.new_page()
         response = page.goto(url)
         html_content = page.content()

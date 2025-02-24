@@ -25,12 +25,12 @@ from configuration.path import get_config_path
 redis_client = redis.Redis(db=12,**REDIS_CONFIG)
 
 def get_proxies(region):
-    proxies = "http://192.168.2.165:7890"
+    proxies = "http://192.168.5.188:7890"
     if region in ("JP","US"):
         print("有代理")
         return proxies
     else:
-        return None
+        return proxies
 
 def make_url(market,asin):
     urls = generate_urls(market)
@@ -125,7 +125,7 @@ async def pachong(db, brand, market, search_term):
     # 代理配置管理
     proxy_configs = [
         {'proxy': None, 'auth': None},
-        {'proxy': 'http://192.168.2.165:7890', 'auth': None},
+        {'proxy': 'http://192.168.5.188:7890', 'auth': None},
         {'proxy': 'tunpool-pczn8.qg.net:17841', 'auth': ('7D914026', '6DB40C477A3A')}
     ]
     proxy_index = 0
@@ -148,7 +148,7 @@ async def pachong(db, brand, market, search_term):
 
                 # 创建新页面
                 page = await browser.newPage()
-            elif current_proxy['proxy'] == 'http://192.168.2.165:7890':
+            elif current_proxy['proxy'] == 'http://192.168.5.188:7890':
                 print(f"使用异步Playwright访问：{current_proxy}")
                 browser = None
                 try:
